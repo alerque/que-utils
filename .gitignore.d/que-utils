@@ -1,5 +1,6 @@
 *
 !/bin
+!/bin/cplay
 !/bin/rtm
 !/bin/set_background_worldlight.zsh
 !/bin/uyut
