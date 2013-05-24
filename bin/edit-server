@@ -20,7 +20,7 @@ use Getopt::Long;
 # will be saved to the $SAVE_AUTH_FILE file.  All subsequent requests
 # are compared to that value.  To change your password, just remove the
 # file and make a new edit-server request using the new auth info.
-our $REQUIRE_AUTH = 1;
+our $REQUIRE_AUTH = 0;
 our $SAVE_AUTH_FILE = "$ENV{HOME}/.edit-server-auth";
 
 # Only accept requests from something that claims to be a chrome-extension.
