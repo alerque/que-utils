@@ -1,5 +1,6 @@
 *
 !/bin
+!/bin/rtm
 !/bin/set_background_worldlight.zsh
 !/.gitignore.d
 !/.gitignore.d/que-utils

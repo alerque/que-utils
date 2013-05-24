@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+mail -f caleb@alerque.com -s "$*" alerque+805818@rmilk.com
