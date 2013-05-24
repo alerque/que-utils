@@ -1,5 +1,6 @@
 *
 !/bin
+!/bin/chrome
 !/bin/cplay
 !/bin/edit-server
 !/bin/rtm

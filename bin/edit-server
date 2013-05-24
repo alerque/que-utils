@@ -28,15 +28,15 @@ our $SAVE_AUTH_FILE = "$ENV{HOME}/.edit-server-auth";
 our $REQUIRE_CHROME_EXTENSION = 1;
 
 # Configures the port we listen on and if we allow only localhost requests.
-our $PORT = 8888;
+our $PORT = 9292;
 our $LOCALHOST_ONLY = 1;
 
 # Configure the program that you want to run to handle the requests.
 # This editor invocation must NOT return control to this script until
 # you are done editing.
-our $EDITOR_CMD = '/usr/bin/gvim.gnome -b -f "%s" "+:set noeol"';
+our $EDITOR_CMD = '/usr/bin/gvim.gnome -b "+:set noeol" -f "%s"';
 if ( `hostname` =~ /sincap.local/ ) {
-    $EDITOR_CMD = '/Applications/MacVim.app/Contents/MacOS/MacVim -b "%s" "+:set noeol"';
+    $EDITOR_CMD = '/Applications/MacVim.app/Contents/MacOS/MacVim -b "+:set noeol" "%s"';
 }
 #our $EDITOR_CMD = '/usr/bin/emacsclient -c "%s"';
 

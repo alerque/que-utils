@@ -1,0 +1,13 @@
+#!/bin/zsh
+
+CHROME=$(which google-chrome || which chromium-browser)
+
+[[ $1 == ne ]] && opts='--disable-extensions'
+
+pkill edit-server
+
+~/bin/edit-server &
+
+$CHROME $opts
+
+kill %1
