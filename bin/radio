@@ -1,0 +1,53 @@
+#!/bin/zsh
+
+station=$1
+record=$2
+
+function timeout () {
+	if [ $length -gt 0 ]; then
+		$* &
+		pid=$!
+		(sleep 2 && mplayer $of -nocache -quiet -really-quiet > /dev/null 2>&1) &
+		sleep $length
+		kill $pid
+		while [ -d /proc/$pid]; do
+			sleep 1;
+		done
+	else
+		$*
+	fi
+}
+
+case $1 in
+	dwg)
+		url='http://duesseldorf.radiostream.de:28555'
+		;;
+	m88|klyt)
+		url='http://69.80.226.199/m88-64'
+		;;
+	westmont)
+		url='http://radio.westmont.edu:8001/stream_128.mp3'
+		;;
+	krst)
+		url='http://mmslb.eonstreams.com/citadel_nm_albuquerque_krst_fm.asf?PPID=1303&Gender=M&Age=26'
+		;;
+	bbctr)
+		curl -s http://www.bbc.co.uk/turkish/1600tx.ram | read url
+		;;
+esac
+
+if [ -n "$record" ]; then
+	calc "$record * 60" | read length
+	date "+%s" | read ts
+	of="/tmp/${station}_$ts.wav"
+	record="-ao pcm:file=$of -vc dummy -vo null"
+fi
+
+timeout mplayer $url ${(z)record} -nocache -quiet -really-quiet > /dev/null 2>&1
+
+if [ -n "$of" ]; then
+	if=$of
+	date "+%Y%m%d" | read ds
+	of=~/radio_${station}_${ds}_$ts.mp3
+	sox $if $of
+fi
