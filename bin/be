@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+user=$1
+
+grep ^$user /etc/passwd |
+	cut -d: -f6 |
+	read home
+
+cd $home
+
+sudo -u $user $SHELL
