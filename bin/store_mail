@@ -1,0 +1,53 @@
+#!/bin/zsh
+
+#name=`whoami`
+days=8
+
+#[ $1 ] && name=$1
+[ -z "$1" ] && days=$1
+
+cd ~
+
+# Create a directory structure under 'storage'
+#	that matches the main inbox structure
+find Maildir/ -type d |
+		pcregrep -v '\.storage' |
+		pcregrep -iv 'trash' |
+		pcregrep -v 'courierimap' |
+		perl -pne 's!dir/\.?!dir/.storage.!g;s!\.$!!g' |
+		perl -pne 's!\.storage\.(cur|new|tmp)!.storage/\1!g' |
+	while read dir; do
+		mkdir "$dir" > /dev/null 2>&1
+		echo Making Directory: $dir
+		newdir=`echo $dir|pcregrep -v '(cur|new|tmp)'`
+		if [ "$newdir" ];then
+			touch "$newdir/maildirfolder"
+			echo Coverting to Maildir: $newdir
+		fi
+	done
+
+# Find emails older than 8 days old and get them into
+#	their corresponding storage directories
+find Maildir -mtime +$days |
+		pcregrep -i '\w+,' |
+		pcregrep -v ',.+F' |
+		pcregrep -iv '(trash|\.storage)' |
+	while read email; do
+		oldfile="$email"
+		newfile=`echo $email|perl -pne 's!^Maildir/\.?!Maildir/.storage.!g;s!\.storage\.(cur|new|tmp)!.storage/\1!g'`
+		mv "$oldfile" "$newfile"
+		echo Moving email $oldfile
+	done
+
+cd Maildir
+
+# Make sure the user is subscribed to all current folders
+find . -type d |
+		pcregrep -v '(tmp|cur|new)$' |
+		pcregrep -v 'courierimap' |
+		perl -pne 's!^\./?!INBOX!g' \
+	> courierimapsubscribed
+
+echo Subscribing All Folders
+
+exit
