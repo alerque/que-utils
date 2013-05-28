@@ -1,0 +1,13 @@
+#!/bin/zsh
+
+file=$1
+stat -c %U "$1" | read owner
+whoami | read me
+
+sudo -u $owner co -f -u -q $file
+sudo -u $owner vim -u ~/.vimrc -u ~/bin/vimrc "+set ft=wiki" $file
+
+# if ,v file doesnt' exist, better make it
+
+sudo -u $owner rcs -a$me $file
+sudo -u $owner ci -u -w$me -m'vim edit' -q $file

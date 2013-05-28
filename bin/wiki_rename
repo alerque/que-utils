@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+old=$1
+new=$2
+
+function flunk () {
+	echo "ERROR: $*"
+	exit 1
+}
+
+echo $new | pcregrep -q '^[A-Z][-A-Za-z0-9_+.& ]+$' || flunk "$new wiki page name not valid."
+[ -f "$old" ] || flunk "$old wiki file does not exist."
+[ -f "$new" ] && flunk "$new wiki page name already exists."
+
+sudo mv "$old,v" "$new,v"
+sudo mv "$old" "$new"
+
+ls | grep -v ',v$' | grep -v "ChangeLog" | while read f; do
+	grep -q "$old" "$f" && echo "Wiki file $f linked to $old. Please update these link(s) to $new."
+done

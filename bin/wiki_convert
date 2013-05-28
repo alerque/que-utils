@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+if [ -n "$1" ]; then
+	file=$1
+	stat -c %U "$1" | read owner
+	whoami | read me
+	sudo -u $owner co -f -u -q $file
+	sudo -u $owner ex -u NONE "+set ft=wiki" "+%!$0" "+x" $file
+	sudo -u $owner rcs -a$me $file
+	sudo -u $owner ci -u -w$me -m'Automated format conversion' -q $file
+else
+	cat - |
+		perl -pne 's%(?<!\\)\[(.*?)\|(.*?)]%"\1":\2%g' |
+		perl -pne 's%(?<!\\)\[(.*?):(.*?):(.*?)]%(\1):\2(\3)%g' |
+		perl -pne 's%(?<!\\)\[(.*?):(.*?)]%(\1):\2%g' |
+		perl -pne 's%^\[(.+)\]$%@(\1)%g' |
+		perl -pne 's%\\"%"%g' |
+		perl -pne "s%\\\'%'%g"
+fi
