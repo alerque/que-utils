@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+echo $* | perl -pne 's/ /%20/g' | read verse
+
+curl -s "http://www.biblegateway.com/passage/index.php?search=$verse" |
+	perl -pne 's/<(quote|begin-paragraph).{0,3}>//g' |
+	tidy -ashtml -wrap 99999 -q 2> /dev/null |
+	grep '<sup' |
+	lynx -dump -stdin -nolist -nofilereferer |
+	perl -pne 's/\^?\d+//g;s/\^?\[.\]//g;s/Footnotes:.*//g;s/\n/ /g;s/^\s*//g'
