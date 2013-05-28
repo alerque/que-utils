@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-[ "$HOSTNAME" = "$1" || { echo "This is $HOSTNAME but you acted on '$1'; are you sure you know what you're doing?" ; exit }
+[ "$HOSTNAME" = "$1" ] || { echo "This is $HOSTNAME but you acted on '$1'; are you sure you know what you're doing?" ; exit }
 
 case $HOSTNAME in
 	lemur)
