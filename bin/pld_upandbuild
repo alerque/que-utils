@@ -1,0 +1,51 @@
+#!/bin/zsh
+
+. /etc/rc.d/init.d/functions
+
+edit=y
+build=y
+adapterize=y
+update=y
+diff=y
+commit=y
+install=y
+buildopts=""
+
+while getopts abeudcio:w: OPT; do
+	case ${OPT} in
+		a) adapterize=n ;;
+		b) build=n ;;
+		e) edit=n ;;
+		u) update=n ;;
+		d) diff=n ;;
+		c) commit=n ;;
+		i) install=n ;;
+		o) buildopts="$buildopts --without $OPTARG" ;;
+		w) buildopts="$buildopts --with $OPTARG" ;;
+	esac
+done
+
+function flunk {
+	fail
+	echo $*
+	exit
+}
+
+pkg=`basename $(pwd)`
+
+if is_yes $update; then
+	cvs up $pkg.spec
+	pldnotify.awk $pkg.spec
+	read x
+fi
+
+is_yes $edit && vim $pkg.spec
+
+is_yes $adapterize && adapter $pkg.spec
+
+is_yes $update && (builder -U $pkg || flunk "Failed to update sources")
+is_yes $build && (builder -R ${(z)buildopts} $pkg || flunk "Build failed")
+is_yes $install && poldek -n home -u $pkg --reinstall
+
+is_yes $diff && cvs diff -u | colordiff
+is_yes $commit && ~/bin/pld_commitup

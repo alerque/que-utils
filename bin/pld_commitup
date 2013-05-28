@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+. /etc/rc.d/init.d/functions
+
+basename $(pwd) | read pkg
+
+message=""
+
+# CVS is really bad about expanding stuff in quoted strings.
+while getopts m: OPT; do
+	case ${OPT} in
+		m) message="
+- $OPTARG" ;;
+	esac
+done
+
+grep ^Version: $pkg.spec |
+	head -n 1 |
+	awk '{print $2}' |
+	read version
+
+read -q "go?Up to $version (y/n): "
+
+is_yes $go && cvs ci -m "- Up to $version$message"

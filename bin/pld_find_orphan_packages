@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+poldek --verify --pset=<(rpm -qa --queryformat="%{NAME}\n") |
+	grep 'no such package' |
+	awk -F: '{print $2}'

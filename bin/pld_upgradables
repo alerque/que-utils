@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+FIFO=$(mktemp -u /tmp/pld_upgradables.XXXXXX)
+IGNORES='(grub|kernel|gcc|binutils)'
+
+function get_pld_ups () {
+	curl --ipv4 -q 'http://cvs.pld-linux.org/cgi-bin/viewvc.cgi/cvs/PLD-doc/PLD-update-TODO?view=co&content-type=text%2Fplain&revision=HEAD' |
+		pcregrep -v "$IGNORES" |
+		cut -d\( -f1 > $FIFO
+}
+
+PKGDIR=~/rpm/packages
+
+if [ "$1" = "mine" ]; then
+	# check all packages I've ever touched
+	grep '^Rev.*caleb$' */*.spec |
+		cut -d/ -f1 | uniq |
+		while read pkg; do
+			SPEC=$PKGDIR/$pkg/$pkg.spec
+			test -f $SPEC && grep -q '^Rev.*caleb$' $SPEC && pldnotify.awk $SPEC
+		done | grep NEW
+elif [ "$1" = "minefast" ]; then
+	get_pld_ups
+	# check packages I've touched tat are in PLD's upgradables list
+	while read pkg; do
+		SPEC=$PKGDIR/$pkg/$pkg.spec
+		test -f $SPEC && grep -q '^Rev.*caleb$' $SPEC && pldnotify.awk $SPEC
+	done < $FIFO | grep NEW
+else
+	get_pld_ups
+	# Look for upgradable packages that are installed on this host
+	rpm -qa --qf "%{NAME}\n" |
+		grep -F -f $FIFO |
+		sort | while read pkg; do
+			SPEC=$PKGDIR/$pkg/$pkg.spec
+			test -f $SPEC && pldnotify.awk $SPEC | grep NEW
+		done
+fi

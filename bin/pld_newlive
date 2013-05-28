@@ -1,0 +1,86 @@
+#!/bin/zsh
+
+PSET=$(mktemp /tmp/mklive.XXXXXX)
+#ROOT=$(mktemp -d /tmp/mklive.XXXXXX)
+ROOT=/tmp/live_rt
+ISO=$1
+MKLIVE=/home/users/caleb/projects/pld/livecd/mklive/mklive
+TPL=templates-lyricuelive
+
+#cat << ONLYPACKAGE
+rm -rf $ROOT ; mkdir -p $ROOT
+
+cat > $PSET << EOF
+basesystem
+kernel
+busybox
+udev-initrd
+poldek
+dhcpcd
+module-init-tools
+issue
+pciutils
+lsb-release
+e2fsprogs
+EOF
+
+cat > /dev/null << NOT
+zsh
+sudo
+NetworkManager-applet
+gdm
+VirtualBox-guest
+VirtualBox-udev
+awesome
+urxvt
+xorg-app-xinit
+xorg-app-twm
+xorg-app-xsetroot
+xorg-xserver-libglx
+xorg-driver-input-evdev
+xorg-driver-input-keyboard
+xorg-driver-input-mouse
+xorg-driver-input-synaptics
+xorg-driver-input-vboxmouse
+xorg-driver-input-vmmouse
+xorg-driver-video-vesa
+acpi
+acpid-policy
+NOT
+
+#poldek -n th --up
+poldek -n th -v \
+	--pset $PSET \
+	--noask \
+	--install-dist $ROOT \
+	-O ignore='udev-18[2345]* vserver*' \
+	-O keep-downloads=yes
+#chroot $ROOT mount /proc
+#poldek -r $ROOT --reinstall geninitrd kernel
+#chroot $ROOT poldek -n th
+
+# Set hostname
+sed -i '' -e 's/pldmachine/lyricuelive/g' $ROOT/etc/sysconfig/network
+echo 'nameserver 8.8.8.8' > $ROOT/etc/resolv.conf
+
+# Set console width
+sed -i '' -e 's/#INIT_COL=67/INIT_COL=72/g' $ROOT/etc/sysconfig/system
+
+# Setup users
+chroot $ROOT useradd -m lyricue
+echo queuemeup | chroot $ROOT passwd --stdin root
+echo queuemeup | chroot $ROOT passwd --stdin lyricue
+
+cat > $ROOT/home/users/lyricue/.xinitrc << EOF
+xsetroot -solid blue
+exec twm
+EOF
+
+#chroot $ROOT umount /proc
+
+#ONLYPACKAGE
+
+VOLID=lyricueLive PREPARER=caleb APPLICATION=lyricue $MKLIVE $ROOT $ISO --tpl=$TPL
+
+rm $PSET
+#rm -rf $ROOT
