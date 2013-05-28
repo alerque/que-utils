@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+dev="38:0A:94:B6:80:2D"
+dev_name="albatros"
+
+SLEEP=60
+
+while true; do
+	RETVAL=`$BT_CMD`
+	if [ ${#RETVAL} -gt 0 ]
+	if hcitool name $dev | grep -q $dev_name ; then
+		pkill -9 slock
+	else
+		pgrep slock || slock
+	fi
+	sleep $SLEEP
+done
