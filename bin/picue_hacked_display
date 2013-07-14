@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+onsigint() {
+	pkill -9 -f vnc
+	xrandr --output DVI-I-1 --auto
+	exit
+}
+
+trap onsigint SIGINT
+
+echo Killing old
+pkill -9 -f vnc
+sleep 1
+
+echo Starting new
+
+while true; do
+	xrandr --output DVI-I-1 --mode 1280x800
+	x11vnc -noxdamage -rfbauth ~/.vnc/passwd -quiet &
+	#x11vnc -noxdamage -rfbauth ~/.vnc/passwd -quiet -scale 1280x800 &
+	lyricue_display -r 192.168.9.2
+	sleep 1
+	pkill -9 -f vnc
+	sleep 2
+done
