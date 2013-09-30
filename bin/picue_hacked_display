@@ -2,7 +2,8 @@
 
 onsigint() {
 	pkill -9 -f vnc
-	xrandr --output DVI-I-1 --auto
+	#xrandr --output DVI-I-1 --auto
+	xrandr --output DVI-I-1 --mode 1920x1080 --pos 0x400 --output VGA-1 --mode 1680x1050 --pos 1920x0 --rotate right
 	exit
 }
 
@@ -15,9 +16,10 @@ sleep 1
 echo Starting new
 
 while true; do
-	xrandr --output DVI-I-1 --mode 1280x800
+	#xrandr --output DVI-I-1 --mode 1280x800
+	xrandr --output DVI-I-1 --mode 1280x800 --pos 0x0 --output VGA-1 --off
 	x11vnc -noxdamage -rfbauth ~/.vnc/passwd -quiet &
-	#x11vnc -noxdamage -rfbauth ~/.vnc/passwd -quiet -scale 1280x800 &
+	##x11vnc -noxdamage -rfbauth ~/.vnc/passwd -quiet -scale 1280x800 &
 	lyricue_display -r 192.168.9.2
 	sleep 1
 	pkill -9 -f vnc
