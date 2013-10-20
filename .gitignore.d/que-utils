@@ -6,6 +6,7 @@
 !/bin/chrome
 !/bin/compile_kernel.zsh
 !/bin/cplay
+!/bin/dropbox.py
 !/bin/edit-server
 !/bin/get_verse
 !/bin/graph_my_life.zsh
@@ -14,6 +15,7 @@
 !/bin/multixterm
 !/bin/offload.zsh
 !/bin/phpman
+!/bin/picue_hacked_display
 !/bin/pld_build_setup.zsh
 !/bin/pld_commitup
 !/bin/pld_find_orphan_packages
