@@ -1,7 +1,8 @@
 #!/bin/zsh
 
 # Make sure our HOST var is set and just has the short name
-: ${${HOSTS:=$(hostname -s)}%%.*}
+HOST=${HOST%%.*}
+test -n $HOST || HOST=$(hostname -s)
 
 [[ "$HOST" = "$1" ]] || { echo "This is $HOST but you acted on '$1'; are you sure you know what you're doing?" ; exit }
 
