@@ -1,0 +1,4 @@
+#!/bin/sh
+/usr/bin/chromium \
+		--profile-directory=Default \
+		--app-id=pkclgpgponpjmpfokoepglboejdobkpl
