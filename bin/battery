@@ -2,20 +2,10 @@
 
 set -e
 
-cat /proc/acpi/battery/BAT0/{info,state} | while IFS=: read key value; do
-	echo $value | perl -pne 's/^\S*//g' | read value
-	case $key in
-		remaining\ capacity*)
-			remaining=$value
-			;;
-		charging\ state*)
-			state=$value
-			;;
-		last\ full\ capacity*)
-			capacity=$value
-			;;
-	esac
-	#echo $key is $value
-done
+bat=/sys/class/power_supply/BAT0/
+full=$(cat $bat/energy_full)
+now=$(cat $bat/energy_now)
+state=$(cat $bat/status)
+percent=$(( 100 * $now / $full ))
 
-echo "Battery has $remaining of $capacity left and is $state."
+echo "$state battery has $now of $full left ($percent%)."
