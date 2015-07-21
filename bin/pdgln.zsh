@@ -17,22 +17,22 @@ trap 'rm -rf $BUILDDIR' EXIT SIGHUP SIGTERM
 pushd $BUILDDIR
 
 for i in $(seq 0 1); do
-	formatdate=$(date --date "$date + $i days" "+%A günü %Y-%m-%d")
+	formatdate=$(date --date "$date + $i days" "+%A günü %F")
 	> ${i}.sil <<- EOF
 		\begin[papersize=a5]{document}
 		\nofolios
 		\begin[first-content-frame=content]{pagetemplate}
-		\frame[id=content, top=10%, bottom=90%, left=10%, right=80%]
+		\frame[id=content, top=12%, bottom=90%, left=8%, right=84%]
 		\end{pagetemplate}
 		\set[parameter=current.parindent,value=0]
 		\set[parameter=document.parindent,value=0]
-		\font[language=tr,family=Crimson,size=13pt]
+		\font[language=tr,family=Crimson,size=14pt]
 
 		Dalyan Gümrük İşhanı'nın dikkatine:
 		\bigskip
 
 		$formatdate tarihinde 802 numaralı ofiste akşam \font[weight=800]{saat $time} olana kadar çalışıyor olacağım.
-		\skip[height=3em]
+		\skip[height=4em]
 
 		Caleb Maclennan
 
