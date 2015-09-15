@@ -9,11 +9,16 @@
 !/bin/dropbox.py
 !/bin/edit-server
 !/bin/get_verse
+!/bin/git-churn
+!/bin/git-forest
+!/bin/git-overwritten
 !/bin/graph_my_life.zsh
+!/bin/inbox
 !/bin/knockknock.zsh
 !/bin/lemur_camelion_tc.zsh
 !/bin/multixterm
 !/bin/offload.zsh
+!/bin/pdgln.zsh
 !/bin/phpman
 !/bin/picue_hacked_display
 !/bin/pld_build_setup.zsh
