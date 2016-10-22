@@ -24,7 +24,7 @@ for i in 0 ${inc}; do
 		\begin[papersize=a5]{document}
 		\nofolios
 		\begin[first-content-frame=content]{pagetemplate}
-		\frame[id=content, top=12%, bottom=90%, left=8%, right=84%]
+		\frame[id=content, top=12%ph, bottom=90%ph, left=8%pw, right=84%pw]
 		\end{pagetemplate}
 		\set[parameter=current.parindent,value=0]
 		\set[parameter=document.parindent,value=0]
