@@ -11,6 +11,7 @@
 !/bin/get_verse
 !/bin/git-churn
 !/bin/git-forest
+!/bin/git-ls-all-trees
 !/bin/git-overwritten
 !/bin/graph_my_life.zsh
 !/bin/inbox
@@ -19,7 +20,6 @@
 !/bin/multixterm
 !/bin/offload.zsh
 !/bin/pdgln.zsh
-!/bin/phpman
 !/bin/picue_hacked_display
 !/bin/pld_build_setup.zsh
 !/bin/pld_commitup
