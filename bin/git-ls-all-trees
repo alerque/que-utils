@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+set -e
+
+# List all files in the current repo in the fastest way possible. The shell mode
+# will naturally cause this to exit with a failure if not in a repository.
+git ls-tree -r --name-only HEAD
+
+# Recurse into any submodules and output their list of files as well, taking
+# care to prefix them with the correct path.
+git submodule status --recursive |
+	awk '{print $2}' |
+	while read submodule; do
+		( cd $submodule && git ls-tree -r --name-only HEAD | xargs -iX echo "$submodule/X" ||: )
+	done
