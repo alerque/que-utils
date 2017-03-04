@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-CHROME=$(which google-chrome || which chromium-browser)
+CHROME=$(which google-chrome || which chromium)
 
 [[ $1 == ne ]] && opts='--disable-extensions'
 
