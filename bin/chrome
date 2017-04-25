@@ -1,13 +1,21 @@
 #!/bin/zsh
 
-CHROME=$(which google-chrome || which chromium)
+CHROME=$(which chromium || which chromium-browser || which google-chrome)
 
-[[ $1 == ne ]] && opts='--disable-extensions'
+: ${DISPLAY:=:0}
 
 pkill edit-server
 
 ~/bin/edit-server &
 
-$CHROME $opts
+args=$@
+
+case $(xdpyinfo | grep resolution | awk -F'[x ]*' '{print $3}') in
+	235)
+		args="--force-device-scale-factor=2 $args"
+		;;
+esac
+
+$CHROME $args
 
 kill %1
