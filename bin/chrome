@@ -1,6 +1,6 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
-CHROME=$(which chromium || which chromium-browser || which google-chrome)
+whence chromium chromium-browser google-chrome | head -n1 | read CHROME
 
 : ${DISPLAY:=:0}
 
