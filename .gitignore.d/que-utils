@@ -18,6 +18,7 @@
 !/bin/knockknock.zsh
 !/bin/lemur_camelion_tc.zsh
 !/bin/multixterm
+!/bin/nvim-tmux-scratch
 !/bin/offload.zsh
 !/bin/pdgln.zsh
 !/bin/picue_hacked_display
