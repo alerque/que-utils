@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+
+{ test ! -t 0 && cat - || xclip -selection clipboard -out } |
+	sed -e 's/[[:space:]  ]\+/ /g' \
+		-e 's/[—–]/-/g' \
+		-e 's/[^-,:;\.[:alnum:]]*$//g' \
+		-e 's/^[^[:alnum:]]*//g' \
+		-e 's/[^[:alnum:]]*$//g' |
+	read ref
+
+curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "query=${ref}" |
+	sed -e 's/^verse(//;s/);$//' |
+	tee /tmp/s |
+	jq -r '.scripture' 2>/dev/null|
+	sed -e 's/<\/\?span[^>]*>//g' \
+	    -e 's/<\/\?title[^>]*>[^<]*<\/\?title[^>]*>/\n\n/g' \
+	    -e 's/  *<\/\?br[^>]*> */\n/g' \
+	    -e 's/<\/\?br[^>]*> */\n\n/g' \
+	    -e 's/<\/\?chapter[^>]*> */\n/g' \
+	    -e 's/ *<\/\?l[^>]*> */ /g' \
+		-e 's/[[:space:]]*$//' |
+	cat -s |
+	tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' |
+	perl -pe 'chomp if eof' |
+	tee /tmp/ayet |
+	xclip -selection clipboard -in
+
+# awk '/[[:graph:]]/ { p=1; for (i=1; i<=n; i++) print ""; n=0; print }; p && /^[[:space:]]*$/ { n++ }' |
+# perl -pe 'undef $/;s/\A\n+//;s/\n+\Z//' |
+
+echo $ref
+echo "===="
+cat /tmp/ayet
