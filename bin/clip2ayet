@@ -22,6 +22,7 @@ curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "que
 	cat -s |
 	tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' |
 	perl -pe 'chomp if eof' |
+	texify |
 	tee /tmp/ayet |
 	xclip -selection clipboard -in
 
@@ -31,3 +32,4 @@ curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "que
 echo $ref
 echo "===="
 cat /tmp/ayet
+echo
