@@ -1,4 +1,6 @@
 #!/usr/bin/env zsh
+: ${TRAN:=}
+: ${TEX:=false}
 
 { test ! -t 0 && cat - || xclip -selection clipboard -out } |
 	sed -e 's/[[:space:]  ]\+/ /g' \
@@ -8,9 +10,12 @@
 		-e 's/[^[:alnum:]]*$//g' |
 	read ref
 
-curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "query=${ref}" |
+function texify () {
+	cat -
+}
+
+curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "query=${TRAN}${ref}" |
 	sed -e 's/^verse(//;s/);$//' |
-	tee /tmp/s |
 	jq -r '.scripture' 2>/dev/null|
 	sed -e 's/<\/\?span[^>]*>//g' \
 	    -e 's/<\/\?title[^>]*>[^<]*<\/\?title[^>]*>/\n\n/g' \
@@ -21,15 +26,28 @@ curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "que
 		-e 's/[[:space:]]*$//' |
 	cat -s |
 	tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' |
+	pandoc --wrap=preserve -t markdown+smart |
 	perl -pe 'chomp if eof' |
-	texify |
-	tee /tmp/ayet |
-	xclip -selection clipboard -in
+	$TEX && texify || cat |
+	tee /dev/stderr /tmp/ayet
 
-# awk '/[[:graph:]]/ { p=1; for (i=1; i<=n; i++) print ""; n=0; print }; p && /^[[:space:]]*$/ { n++ }' |
-# perl -pe 'undef $/;s/\A\n+//;s/\n+\Z//' |
+	# awk '/[[:graph:]]/ { p=1; for (i=1; i<=n; i++) print ""; n=0; print }; p && /^[[:space:]]*$/ { n++ }' |
+	# perl -pe 'undef $/;s/\A\n+//;s/\n+\Z//'
 
-echo $ref
-echo "===="
-cat /tmp/ayet
-echo
+case $1 in
+	block)
+		echo ::: {.bible}
+		echo "[$ref]{.ref}"
+		cat /tmp/ayet
+		echo
+		echo :::
+		echo
+		;;
+	inline|*)
+		(
+		echo -n "[[$ref]{.ref} "
+		cat /tmp/ayet
+		echo -n "]{.bible}"
+		) | xclip -selection clipboard -in
+		;;
+esac
