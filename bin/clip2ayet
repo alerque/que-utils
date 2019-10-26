@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+
 : ${TRAN:=}
 : ${TEX:=false}
 
@@ -27,13 +28,12 @@ curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "que
 	cat -s |
 	tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' |
 	pandoc --wrap=preserve -t markdown+smart |
-	perl -pe 'chomp if eof' |
-	$TEX && texify || cat |
-	tee /dev/stderr /tmp/ayet
+	perl -pe 'chomp if eof' > /tmp/ayet
 
 	# awk '/[[:graph:]]/ { p=1; for (i=1; i<=n; i++) print ""; n=0; print }; p && /^[[:space:]]*$/ { n++ }' |
 	# perl -pe 'undef $/;s/\A\n+//;s/\n+\Z//'
 
+(
 case $1 in
 	block)
 		echo ::: {.bible}
@@ -44,10 +44,11 @@ case $1 in
 		echo
 		;;
 	inline|*)
-		(
 		echo -n "[[$ref]{.ref} "
 		cat /tmp/ayet
 		echo -n "]{.bible}"
-		) | xclip -selection clipboard -in
 		;;
 esac
+) |
+	tee /dev/stderr |
+	xclip -selection clipboard -in
