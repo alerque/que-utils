@@ -23,9 +23,9 @@ add_pkg () {
 }
 
 for pkgname in ${pkgname[@]}; do
-    for arch in ${arch[@]}; do
-        if [[ $arch == any || $arch == x86_64 ]]; then
-            add_pkg $pkgname-$ver-$arch.pkg.tar.zst
+    for parch in ${arch[@]}; do
+        if [[ $parch == any || $parch == x86_64 ]]; then
+            add_pkg $pkgname-$ver-$parch.pkg.tar.zst
         fi
     done
 done
