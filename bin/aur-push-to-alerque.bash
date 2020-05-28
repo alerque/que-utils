@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ! -s PKGBUILD ]] && [[ -n $1 ]]; then
+if [[ -n $1 ]]; then
     if [[ -d ~/projects/aur/$1 ]]; then
         cd ~/projects/aur/$1
     elif [[ -d ~/.cache/yay/$1 ]]; then
