@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+if [[ ! -s PKGBUILD ]] && [[ -n $1 ]]; then
+    if [[ -d ~/projects/aur/$1 ]]; then
+        cd ~/projects/aur/$1
+    elif [[ -d ~/.cache/yay/$1 ]]; then
+        cd ~/.cache/yay/$1
+    fi
+fi
+
 source PKGBUILD
 
 set -x
