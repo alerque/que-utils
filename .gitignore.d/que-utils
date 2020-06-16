@@ -1,12 +1,14 @@
 *
 !/bin
+!/bin/archpub
 !/bin/battery
 !/bin/be
 !/bin/blulock
-!/bin/chrome
+!/bin/CAPSLOCKOFF
 !/bin/clip2ayet
 !/bin/compile_kernel.zsh
 !/bin/cplay
+!/bin/detexify
 !/bin/dropbox.py
 !/bin/edit-server
 !/bin/get_verse
@@ -45,6 +47,7 @@
 !/bin/set_background_worldlight.zsh
 !/bin/store_mail
 !/bin/svnmerge.py
+!/bin/texify
 !/bin/unburry_key
 !/bin/uyut
 !/bin/view_source.zsh
