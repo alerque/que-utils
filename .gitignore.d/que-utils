@@ -45,6 +45,7 @@
 !/bin/set_background_worldlight.zsh
 !/bin/store_mail
 !/bin/svnmerge.py
+!/bin/unburry_key
 !/bin/uyut
 !/bin/view_source.zsh
 !/bin/watch_mail

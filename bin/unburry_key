@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+cd ~
+
+KEYFILE=.private/caleb.key
+DATABASE=Nextcloud/private/caleb.kdbx
+IFS= read -sr "PASSWORD?Keypass Passphrase: " < /dev/tty
+
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT SIGHUP SIGTERM
+
+function kp_locate () {
+	keepassxc-cli locate -q -k "$KEYFILE" "$TMPFILE" "$1" <<< "$PASSWORD"
+}
+
+function kp_show () {
+	keepassxc-cli show -q -k "$KEYFILE" "$TMPFILE" "$1" <<< "$PASSWORD"
+}
+
+git log --format=%H -- $DATABASE |
+	while read hash; do
+		git show $hash:$DATABASE > "$TMPFILE"
+		echo "# Checking $hash for '$1'"
+		kp_locate "$1" | read entry && break
+	done
+
+if [[ -n $entry ]] ; then
+	kp_show $entry
+fi
