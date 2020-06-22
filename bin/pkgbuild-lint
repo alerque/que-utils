@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+curl --data-binary @$1 https://coderobe.net/pkgbuild
