@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+test -f PKGBUILD
+
+nvim PKGBUILD
+
+updpkgsums
+
+makepkg -fs
+
+git add -u ./
+
+git commit -m ''
+
+git show
+
+aurpublish $(basename $PWD)
+
+git push
+
+archpub
