@@ -12,8 +12,6 @@ fi
 
 source PKGBUILD
 
-set -x
-
 ver=${epoch:+${epoch}:}$pkgver-$pkgrel
 
 pkgs=()
