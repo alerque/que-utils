@@ -23,19 +23,18 @@ flunk () {
 
 add_pkg () {
     if [[ -f $1 && -f $1.sig ]]; then
-        pkgs+=("./$1")
-        pkgs+=("./$1.sig")
+        pkgs+=("./$1" "./$1.sig")
     else
         flunk "Expected package and signature files for $1"
     fi
 }
 
-for pkgname in ${pkgname[@]}; do
-    for parch in ${arch[@]}; do
+for pkgname in "${pkgname[@]}"; do
+    for parch in "${arch[@]}"; do
         if [[ $parch == any || $parch == x86_64 ]]; then
             add_pkg $pkgname-$ver-$parch.pkg.tar.zst
         fi
     done
 done
 
-scp ${pkgs[@]} arch.alerque.com:x86_64
+scp "${pkgs[@]}" arch.alerque.com:x86_64
