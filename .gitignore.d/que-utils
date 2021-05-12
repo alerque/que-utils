@@ -9,6 +9,7 @@
 !/bin/compile_kernel.zsh
 !/bin/configure_domain.zsh
 !/bin/cplay
+!/bin/deploy_website.zsh
 !/bin/detexify
 !/bin/dropbox.py
 !/bin/edit-server
