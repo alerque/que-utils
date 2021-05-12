@@ -34,7 +34,7 @@ nvim $domain
 popd
 
 vhost="$etc/httpd/conf/extra/httpd-vhosts.conf"
-if ! grep -sF $domain $vhost; then
+if ! grep -sF "Host $domain" $vhost; then
 	if [[ -z $target ]]; then
 		$exe tee -a $vhost <<< "Use VHost $domain"
 	else
