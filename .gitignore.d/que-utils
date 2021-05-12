@@ -1,12 +1,13 @@
 *
-!/bin
 !/bin/archpub
+!/bin/aur-bump
 !/bin/battery
 !/bin/be
 !/bin/blulock
 !/bin/CAPSLOCKOFF
 !/bin/clip2ayet
 !/bin/compile_kernel.zsh
+!/bin/configure_domain.zsh
 !/bin/cplay
 !/bin/detexify
 !/bin/dropbox.py
@@ -25,6 +26,7 @@
 !/bin/offload.zsh
 !/bin/pdgln.zsh
 !/bin/picue_hacked_display
+!/bin/pkgbuild-lint
 !/bin/pld_build_setup.zsh
 !/bin/pld_commitup
 !/bin/pld_find_orphan_packages
@@ -55,5 +57,5 @@
 !/bin/wiki
 !/bin/wiki_convert
 !/bin/wiki_rename
-!/.gitignore.d
+!/bin/wp
 !/.gitignore.d/que-utils
