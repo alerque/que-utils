@@ -22,11 +22,13 @@ flunk () {
 }
 
 add_pkg () {
-    if [[ -f $1 && -f $1.sig ]]; then
-        pkgs+=("./$1" "./$1.sig")
-    else
+    if [[ ! -f $1.sig ]]; then
+        gpg --detach-sign --no-armor $1
+    fi
+    if [[ ! -f $1 || ! -f $1.sig ]]; then
         flunk "Expected package and signature files for $1"
     fi
+    pkgs+=("./$1" "./$1.sig")
 }
 
 for pkgname in "${pkgname[@]}"; do
