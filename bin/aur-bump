@@ -8,7 +8,22 @@ nvim PKGBUILD
 
 updpkgsums
 
-makepkg -fs
+# arch-nspawn ~/scratch/arch_chroot/root pacman --noconfirm -Syu
+
+if [[ $1 == chroot ]]; then
+	CHROOT=$HOME/scratch/arch_chroot
+	makechrootpkg -c -r $CHROOT
+	source PKGBUILD
+	ver=${epoch:+${epoch}:}$pkgver-$pkgrel
+	for parch in "${arch[@]}"; do
+		if [[ $parch == any || $parch == x86_64 ]]; then
+			pkg=$pkgname-$ver-$parch.pkg.tar.zst
+			gpg --detach-sign --no-armor $pkg
+		fi
+	done
+else
+	makepkg -fs
+fi
 
 git add -u ./
 
