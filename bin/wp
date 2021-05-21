@@ -8,7 +8,7 @@ git diff-files --quiet || exit 1 # die if any tracked files have unstagged chang
 mktemp | read LOG
 trap 'rm -rf $LOG' EXIT SIGHUP SIGTERM
 
-php7 /usr/bin/wp --color $@ | tee $LOG
+/usr/bin/wp --color $@ | tee $LOG
 
 git add -A
 {
