@@ -50,6 +50,7 @@ if [[ ! -a $certs ]]; then
 		name = "$domain"
 		dns_names = [
 		  "$domain",
+		  "www.$domain",
 		]
 
 		# vim: ft=toml
