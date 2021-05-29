@@ -31,10 +31,10 @@ add_pkg () {
     pkgs+=("./$1" "./$1.sig")
 }
 
-for pkgname in "${pkgname[@]}"; do
-    for parch in "${arch[@]}"; do
-        if [[ $parch == any || $parch == x86_64 ]]; then
-            add_pkg $pkgname-$ver-$parch.pkg.tar.zst
+for _pkgname in "${pkgname[@]}"; do
+    for _arch in "${arch[@]}"; do
+        if [[ $_arch == any || $_arch == x86_64 ]]; then
+            add_pkg $_pkgname-$ver-$_arch.pkg.tar.zst
         fi
     done
 done
