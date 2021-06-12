@@ -1,28 +1,31 @@
 #!/usr/bin/env zsh
 
+speed=1.0
 case $1 in
 	002)
 		speed=1.1
 		_margs="-ss 4"
 		;;
+	028)
+		_margs="-ss 1"
+		;;
 	033)
 		speed=0.833
-		;;
-	*)
-		speed=1.0
 		;;
 esac
 
 R=${HOME}/Nextcloud/ipk/ilahi_refakat_kayıtlar/${1}_kendra_1.mp4
 M=${HOME}/Nextcloud/tprk/ilahiler/$1.midi
 
-set -x
 if [[ -f $R ]]; then
+	set -x
 	nice -n -20 mplayer -quiet -ao pulse -af scaletempo -speed $speed ${(z)_margs} $R
+	set +x
 elif [[ -f $M ]]; then
+	set -x
 	nice -n -20 fluidsynth -q -a pulseaudio -m alsa_seq -r 48000 -l -i /usr/share/soundfonts/FluidR3_GM.sf2 $M
+	set +x
 else
 	echo "Fatal: no sources" >&2
-	return 1
+	exit 1
 fi
-set +x
