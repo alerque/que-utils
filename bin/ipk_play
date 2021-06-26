@@ -10,11 +10,20 @@ case $1 in
 		speed=1.1
 		_margs="-ss 4"
 		;;
+	009)
+		# volume
+		version=_kendra_1
+		_margs="-ss 3"
+		;;
 	028)
 		_margs="-ss 1"
 		;;
 	033)
 		speed=0.833
+		;;
+	140)
+		version=_kendra_2
+		_margs="-ss 2"
 		;;
 esac
 
