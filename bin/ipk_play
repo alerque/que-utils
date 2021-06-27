@@ -11,15 +11,15 @@ case $1 in
 		_margs="-ss 4"
 		;;
 	009)
-		# volume
 		version=_kendra_1
-		_margs="-ss 3"
+		_margs="-ss 3 -af volume=20:1"
 		;;
 	028)
 		_margs="-ss 1"
 		;;
 	033)
 		speed=0.833
+		_margs="-ss 7"
 		;;
 	140)
 		version=_kendra_2
@@ -32,7 +32,7 @@ M=${HOME}/Nextcloud/tprk/ilahiler/$1.midi
 
 if [[ -f $R ]]; then
 	set -x
-	nice -n -20 mplayer -quiet -ao pulse -af scaletempo -speed $speed ${(z)_margs} $R
+	nice -n -20 mplayer -quiet -ao pulse -af scaletempo -speed $speed -af volnorm ${(z)_margs} $R
 	set +x
 elif [[ -f $M ]]; then
 	set -x
