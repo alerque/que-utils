@@ -12,7 +12,7 @@ updpkgsums
 
 if [[ $1 == chroot ]]; then
 	CHROOT=$HOME/scratch/arch_chroot
-	makechrootpkg -c -r $CHROOT
+	makechrootpkg -c -u -r $CHROOT -n -C
 	source PKGBUILD
 	ver=${epoch:+${epoch}:}$pkgver-$pkgrel
 	for parch in "${arch[@]}"; do
