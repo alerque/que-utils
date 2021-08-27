@@ -35,4 +35,6 @@ aurpublish $(basename $PWD)
 
 git push
 
-archpub
+if [[ ! $(basename $PWD) = *-bin ]]; then
+	archpub
+fi
