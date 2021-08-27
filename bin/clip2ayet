@@ -1,54 +1,7 @@
 #!/usr/bin/env zsh
 
-: ${TRAN:=}
-: ${TEX:=false}
-
-{ test ! -t 0 && cat - || xclip -selection clipboard -out } |
-	sed -e 's/[[:space:]  ]\+/ /g' \
-		-e 's/[—–]/-/g' \
-		-e 's/[^-,:;\.[:alnum:]]*$//g' \
-		-e 's/^[^[:alnum:]]*//g' \
-		-e 's/[^[:alnum:]]*$//g' |
+xclip -selection clipboard -out |
 	read ref
 
-function texify () {
-	cat -
-}
-
-curl -s -L https://incil.info/api -G --data callback=verse --data-urlencode "query=${TRAN}${ref}" |
-	sed -e 's/^verse(//;s/);$//' |
-	jq -r '.scripture' 2>/dev/null|
-	sed -e 's/<\/\?span[^>]*>//g' \
-	    -e 's/<\/\?title[^>]*>[^<]*<\/\?title[^>]*>/\n\n/g' \
-	    -e 's/  *<\/\?br[^>]*> */\n/g' \
-	    -e 's/<\/\?br[^>]*> */\n\n/g' \
-	    -e 's/<\/\?chapter[^>]*> */\n/g' \
-	    -e 's/ *<\/\?l[^>]*> */ /g' \
-		-e 's/[[:space:]]*$//' |
-	cat -s |
-	tac | sed -e '/./,$!d' | tac | sed -e '/./,$!d' |
-	pandoc --wrap=preserve -t markdown+smart |
-	perl -pe 'chomp if eof' > /tmp/ayet
-
-	# awk '/[[:graph:]]/ { p=1; for (i=1; i<=n; i++) print ""; n=0; print }; p && /^[[:space:]]*$/ { n++ }' |
-	# perl -pe 'undef $/;s/\A\n+//;s/\n+\Z//'
-
-(
-case $1 in
-	block)
-		echo ::: {.bible}
-		echo "[$ref]{.ref}"
-		cat /tmp/ayet
-		echo
-		echo :::
-		echo
-		;;
-	inline|*)
-		echo -n "[[$ref]{.ref} "
-		cat /tmp/ayet
-		echo -n "]{.bible}"
-		;;
-esac
-) |
-	tee /dev/stderr |
-	xclip -selection clipboard -in
+fetchayet ${1:-inline} "$ref" |
+	pee cat "xclip -selection clipboard -in"
