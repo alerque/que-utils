@@ -10,6 +10,7 @@ if [[ -n $1 ]]; then
     fi
 fi
 
+export CARCH=x86_64
 source PKGBUILD
 
 ver=${epoch:+${epoch}:}$pkgver-$pkgrel
