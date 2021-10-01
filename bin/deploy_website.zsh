@@ -24,7 +24,11 @@ rsync -crlpv --delete \
     --include "wp-content/uploads/.htaccess" \
     --exclude "wp-content/uploads" \
     --exclude "wp-content/cache" \
+    --include "wp-content/w3tc-config/master.php" \
     --exclude "wp-content/w3tc-config" \
+	--include "wp-content/webp-express/.htaaccess" \
+	--include "wp-content/webp-express/webp-images/.htaaccess" \
+	--exclude "wp-content/webp-express" \
     --exclude "wp-content/gallery" \
     ./ "$deploydir/"
 
@@ -36,7 +40,7 @@ pushd "$deploydir"
 
 [[ -f wp-config.php ]] && mkdir -p wp-content/uploads ||:
 
-for dir in wp-content/uploads wp-content/gallery wp-content/cache wp-content/w3tc-config; do
+for dir in wp-content/uploads wp-content/gallery wp-content/cache wp-content/w3tc-config wp-content/webp-express; do
     test -d "$dir" || continue
     sudo chown -R http:http "$dir"
     find "$dir" -type f -execdir sudo chmod -x {} \+
