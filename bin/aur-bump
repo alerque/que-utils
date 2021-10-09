@@ -27,7 +27,7 @@ fi
 
 git add -u ./
 
-git commit -m ''
+git commit -m '' ||:
 
 git show
 
