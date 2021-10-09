@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 
+# set -x
+
 if [[ -n $1 ]]; then
     if [[ -d ~/projects/aur/$1 ]]; then
-        cd ~/projects/aur/$1
-    elif [[ -d ~/.cache/paru/clone/$1 ]]; then
-        cd ~/.cache/paru/clone/$1
-    elif [[ -d ~/.cache/yay/$1 ]]; then
-        cd ~/.cache/yay/$1
+        cd ~/projects/aur/"$1" || exit 1
+    elif [[ -d ~/.cache/paru/clone/"$1" ]]; then
+        cd ~/.cache/paru/clone/"$1" || exit 1
+    elif [[ -d ~/.cache/yay/"$1" ]]; then
+        cd ~/.cache/yay/"$1" || exit 1
     fi
 fi
 
-export CARCH=x86_64
+: "${CARCH:=x86_64}"
+export CARCH
+
 source PKGBUILD
 
 ver=${epoch:+${epoch}:}$pkgver-$pkgrel
@@ -34,10 +38,10 @@ add_pkg () {
 
 for _pkgname in "${pkgname[@]}"; do
     for _arch in "${arch[@]}"; do
-        if [[ $_arch == any || $_arch == x86_64 ]]; then
-            add_pkg $_pkgname-$ver-$_arch.pkg.tar.zst
+        if [[ $_arch == any || $_arch == "$CARCH" ]]; then
+            add_pkg "$_pkgname-$ver-$_arch".pkg.tar.*
         fi
     done
 done
 
-scp "${pkgs[@]}" arch.alerque.com:x86_64
+scp "${pkgs[@]}" arch.alerque.com:$CARCH
