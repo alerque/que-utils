@@ -10,7 +10,11 @@ test -d "$srv"
 basename $(pwd) | read site
 git rev-parse --abbrev-ref HEAD | read branch
 
-deploydir="$srv/$site"
+if [[ $branch != master ]]; then
+	site=$branch.$site
+fi
+
+deploydir=$srv/$site
 
 sudo mkdir -p "$deploydir"
 sudo chown -R caleb:http "$deploydir"
