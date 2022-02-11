@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# source .bashrc
+cd $HOME
 
 set -euo pipefail
 set -x
@@ -11,18 +11,17 @@ test -n "$pkgname"
 pkgver=$2
 test -n "$pkgver"
 
-ipof () {
-	lxc list -f json $1 | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
-}
+GPG="gpg --no-greeting --armor --use-agent --lock-never --no-permission-warning --no-autostart --pinentry-mode loopback"
 
-# if grep -q "Ubuntu" /etc/lsb-release; then
 if systemd-detect-virt | grep -Fxq lxc; then
+	# GPG+=" --no-tty"
 	source /etc/lsb-release
-	# source .bashrc
+	source .bashrc
 	env | grep -q DEBEMAIL
 	bzr whoami | grep -q Caleb
 	ssh-add -l | grep -q caleb
-	date | gpg -a -s > /dev/null
+	env
+	$GPG -s -o /dev/null <<< 'test'
 	case $pkgname in
 		lua-penlight)
 			_pkgname=Penlight
@@ -39,7 +38,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	test -d $_archive || tar xfva $orig
 	cd $_archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
-	exit
+	exit 0
 fi
 
 # foo=(18.04 20.04 21.10) # 22.04
@@ -48,6 +47,10 @@ zoo=(bionic focal impish) # jammy
 : ${ppa:="ppa:sile-typesetter/sile"}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common)
+
+ipof () {
+	lxc list -f json $1 | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
+}
 
 exists () {
 	instance=$1
@@ -75,9 +78,10 @@ freshen () {
 
 for animal in ${zoo[@]}; do
 	instance=$pkgname-$animal
-	exists $instance || launch $instance $animal
-	freshen $instance
-	date | gpg -a -s > /dev/null # confirm current agent locally before trying remote
-	echo "env" | ssh $(ipof $instance) -l ubuntu -t -t -A
-	# echo "$0 $@" | ssh $(ipof $instance) -l ubuntu -t -t -A
+	# exists $instance || launch $instance $animal
+	# freshen $instance
+	ssh-add -l | grep -q caleb # confirm ssh agent before start
+	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
+	script=${0##$HOME/}
+	ssh $(ipof $instance) -l ubuntu -tt -A -- "$script $*"
 done
