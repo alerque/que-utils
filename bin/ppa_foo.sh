@@ -68,18 +68,18 @@ launch () {
 
 freshen () {
 	instance=$1
-	# lxc exec $1 -- add-apt-repository -y $ppa
-	# lxc exec $1 -- apt-get -y update
-	# lxc exec $1 -- apt-get -y dist-upgrade
-	# lxc exec $1 -- apt-get install -y $makedepends
+	lxc exec $1 -- apt-get -y update
+	lxc exec $1 -- apt-get -y dist-upgrade
+	lxc exec $1 -- apt-get install -y ${makedepends[@]}
+	lxc exec $1 -- add-apt-repository -y $ppa
 	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
 	lxc exec $1 -- systemctl restart sshd
 }
 
 for animal in ${zoo[@]}; do
 	instance=$pkgname-$animal
-	# exists $instance || launch $instance $animal
-	# freshen $instance
+	exists $instance || launch $instance $animal
+	freshen $instance
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
