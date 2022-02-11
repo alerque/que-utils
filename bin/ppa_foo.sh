@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+: ${ppa:="ppa:sile-typesetter/sile"}
+
 cd $HOME
 
 set -euo pipefail
@@ -38,13 +40,23 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	test -d $_archive || tar xfva $orig
 	cd $_archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
+	_pkgver="$pkgver-0ppa2~${DISTRIB_ID,,}$DISTRIB_RELEASE"
+	_commit="Build upstream release $pkgver for $DISTRIB_CODENAME"
+	bzr revert debian/changelog
+	dch -D $DISTRIB_CODENAME -v $_pkgver "$_commit"
+	yes | sudo mk-build-deps -i ||:
+	rm -f $pkgname-build-deps_${_pkgver}_all.deb
+	debuild -S -sA
+	bzr commit -m "$_commit"
+	bzr push :parent
+	cd ..
+	dput $ppa ${pkgname}_${_pkgver}_source.changes
 	exit 0
 fi
 
 # foo=(18.04 20.04 21.10) # 22.04
 
 zoo=(bionic focal impish) # jammy
-: ${ppa:="ppa:sile-typesetter/sile"}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common)
 
@@ -83,5 +95,5 @@ for animal in ${zoo[@]}; do
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
-	ssh $(ipof $instance) -l ubuntu -tt -A -- "$script $*"
+	ssh $(ipof $instance) -l ubuntu -tt -A -- "$script $*" || continue
 done
