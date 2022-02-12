@@ -77,13 +77,14 @@ if systemd-detect-virt | grep -Fxq lxc; then
 		sile)
 			_tag=v$pkgver
 			archive=$pkgname-$pkgver
-			source=https://github.com/sile-typesetter/$pkgname/archive/$_tag/$archive.tar.gz
+			source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$archive.tar.xz
+			orig=${pkgname}_$pkgver.orig.tar.xz
 			;;
 		*)
 			exit 1
 			;;
 	esac
-	orig=${pkgname}_$pkgver.orig.tar.gz
+	: ${orig:=${pkgname}_$pkgver.orig.tar.gz}
 	cd projects/distro-packaging/ppa
 	test -f $orig || curl -fsSL $source -o $orig
 	rm -rf $archive
