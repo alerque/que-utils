@@ -97,7 +97,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	dch -D $DISTRIB_CODENAME -v $_pkgver "$_commit"
 	yes | sudo mk-build-deps -i ||:
 	rm -f $pkgname-build-deps_${_pkgver}_*
-	debuild -S -sA
+	debuild -S -sa
 	bzr commit -m "$_commit"
 	bzr push :parent
 	cd ..
