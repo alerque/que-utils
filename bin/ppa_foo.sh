@@ -56,7 +56,7 @@ fi
 
 # foo=(18.04 20.04 21.10) # 22.04
 
-zoo=(bionic focal impish) # jammy
+zoo=(bionic focal impish jammy)
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common)
 
@@ -75,7 +75,7 @@ launch () {
 	lxc launch images:ubuntu/$animal $instance -c security.privileged=true
 	lxc config device add $instance home disk source=$HOME path=/home/ubuntu
 	printf "uid $(id -u) 1000\ngid $(id -g) 1000" |
-		lxc config set $animal raw.idmap -
+		lxc config set $instance raw.idmap -
 }
 
 freshen () {
