@@ -13,6 +13,9 @@ test -n "$pkgname"
 pkgver=$2
 test -n "$pkgver"
 
+: ${pkgrel:=0}
+: ${scriptepoch:=2}
+
 GPG="gpg --no-greeting --armor --use-agent --lock-never --no-permission-warning --no-autostart --pinentry-mode loopback"
 
 if systemd-detect-virt | grep -Fxq lxc; then
@@ -41,7 +44,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	test -d $_archive || tar xfva $orig
 	cd $_archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
-	_pkgver="$pkgver-0ppa2~${DISTRIB_ID,,}$DISTRIB_RELEASE"
+	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
 	_commit="Build upstream release $pkgver for $DISTRIB_CODENAME"
 	bzr revert debian/changelog
 	dch -D $DISTRIB_CODENAME -v $_pkgver "$_commit"
@@ -55,9 +58,9 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	exit 0
 fi
 
-zoo=(bionic focal impish jammy)
+: ${zoo:=bionic focal impish jammy}
 
-makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common)
+makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
 ipof () {
 	lxc list -f json $1 | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
@@ -87,12 +90,12 @@ freshen () {
 	lxc exec $1 -- systemctl restart sshd
 }
 
-for animal in ${zoo[@]}; do
+for animal in $zoo; do
 	instance=$pkgname-$animal
 	exists $instance || launch $instance $animal
 	freshen $instance
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
-	ssh $(ipof $instance) -l ubuntu -tt -A -- "$script $*" || continue
+	ssh $(ipof $instance) -l ubuntu -tt -A -- "pkgrel=$pkgrel scriptepoch=$scriptepoch $script $*" || continue
 done
