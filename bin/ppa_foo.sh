@@ -74,6 +74,11 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			archive=$_pkgname-$pkgver
 			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
+		sile)
+			_tag=v$pkgver
+			archive=$pkgname-$pkgver
+			source=https://github.com/sile-typesetter/$pkgname/archive/$_tag/$archive.tar.gz
+			;;
 		*)
 			exit 1
 			;;
