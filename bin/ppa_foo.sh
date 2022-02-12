@@ -28,21 +28,62 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	env
 	$GPG -s -o /dev/null <<< 'test'
 	case $pkgname in
+		lua-cassowary)
+			_tag=v$pkgver
+			_pkgname=cassowary.lua
+			archive=$_pkgname-$pkgver
+			source=https://github.com/sile-typesetter/$_pkgname/$_tag/$archive.tar.gz
+			;;
+		lua-compat53)
+			_tag=v$pkgver
+			_pkgname=lua-compat-5.3
+			archive=$_pkgname-$pkgver
+			source=https://github.com/keplerproject/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		lua-epnf)
+			_pkgname=lua-luaepnf
+			_tag=v$pkgver
+			archive=$_pkgname-$pkgver
+			source=https://github.com/siffiejoe/$pkgname/archive/$_tag/$archive.tag.gz
+			;;
+		lua-linenoise)
+			archive=$pkgname-$pkgver
+			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
+			;;
 		lua-penlight)
 			_pkgname=Penlight
-			_archive=$_pkgname-$pkgver
-			source=https://github.com/lunarmodules/$_pkgname/archive/refs/tags/$pkgver/$_archive.tar.gz
-			orig=${pkgname}_$pkgver.orig.tar.gz
+			archive=$_pkgname-$pkgver
+			source=https://github.com/lunarmodules/$_pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		lua-repl)
+			archive=$pkgname-$pkgver
+			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		lua-stdlib)
+			_tag=release-v$pkgver
+			archive=$pkgname-$_tag
+			source=https://github.com/$pkgname/$pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		lua-utf8)
+			_pkgname=luautf8
+			archive=$_pkgname-$pkgver
+			source=https://github.com/starwing/$_pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		lua-vstruct)
+			_pkgname=vstruct
+			archive=$_pkgname-$pkgver
+			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
 		*)
 			exit 1
 			;;
 	esac
+	orig=${pkgname}_$pkgver.orig.tar.gz
 	cd projects/distro-packaging/ppa
 	test -f $orig || curl -fsSL $source -o $orig
-	rm -rf $_archive
-	test -d $_archive || tar xfva $orig
-	cd $_archive
+	rm -rf $archive
+	test -d $archive || tar xfva $orig
+	cd $archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
 	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
 	_commit="Build upstream release $pkgver for $DISTRIB_CODENAME"
