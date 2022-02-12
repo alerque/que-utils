@@ -37,6 +37,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	esac
 	cd projects/distro-packaging/ppa
 	test -f $orig || curl -fsSL $source -o $orig
+	rm -rf $_archive
 	test -d $_archive || tar xfva $orig
 	cd $_archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
@@ -45,7 +46,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	bzr revert debian/changelog
 	dch -D $DISTRIB_CODENAME -v $_pkgver "$_commit"
 	yes | sudo mk-build-deps -i ||:
-	rm -f $pkgname-build-deps_${_pkgver}_all.deb
+	rm -f $pkgname-build-deps_${_pkgver}_*
 	debuild -S -sA
 	bzr commit -m "$_commit"
 	bzr push :parent
@@ -53,8 +54,6 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	dput $ppa ${pkgname}_${_pkgver}_source.changes
 	exit 0
 fi
-
-# foo=(18.04 20.04 21.10) # 22.04
 
 zoo=(bionic focal impish jammy)
 
