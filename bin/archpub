@@ -44,4 +44,4 @@ for _pkgname in "${pkgname[@]}"; do
     done
 done
 
-scp "${pkgs[@]}" arch.alerque.com:$CARCH
+scp -O "${pkgs[@]}" arch.alerque.com:$CARCH
