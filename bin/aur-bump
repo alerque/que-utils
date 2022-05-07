@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+# set -x
 
 test -f PKGBUILD
 
@@ -18,7 +19,7 @@ if [[ $1 == chroot ]]; then
 	for parch in "${arch[@]}"; do
 		if [[ $parch == any || $parch == x86_64 ]]; then
 			pkg=$pkgname-$ver-$parch.pkg.tar.zst
-			gpg --detach-sign --no-armor $pkg
+			gpg --detach-sign --no-armor --local-user alerque@archlinux.org -- $pkg
 		fi
 	done
 else
