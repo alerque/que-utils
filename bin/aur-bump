@@ -12,8 +12,9 @@ updpkgsums
 # arch-nspawn ~/scratch/arch_chroot/root pacman --noconfirm -Syu
 
 if [[ $1 == chroot ]]; then
+	shift
 	CHROOT=$HOME/scratch/arch_chroot
-	makechrootpkg -c -u -r $CHROOT -n -C
+	makechrootpkg -c -u -r $CHROOT -n -C -- $@
 	source PKGBUILD
 	ver=${epoch:+${epoch}:}$pkgver-$pkgrel
 	for parch in "${arch[@]}"; do
@@ -23,7 +24,7 @@ if [[ $1 == chroot ]]; then
 		fi
 	done
 else
-	makepkg -fs
+	makepkg -fs $@
 fi
 
 git add -u ./
