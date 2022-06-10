@@ -74,6 +74,24 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			archive=$_pkgname-$pkgver
 			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
+		lua-loadkit)
+			_pkgname=loadkit
+			_tag=v$pkgver
+			archive=$_pkgname-$pkgver
+			source=https://github.com/leafo/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		lua-cldr)
+			_pkgname=cldr-lua
+			_tag=v$pkgver
+			archive=$_pkgname-$pkgver
+			source=https://github.com/alerque/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		lua-fluent)
+			_pkgname=fluent-lua
+			_tag=v$pkgver
+			archive=$_pkgname-$pkgver
+			source=https://github.com/alerque/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
 		sile)
 			_tag=v$pkgver
 			archive=$pkgname-$pkgver
