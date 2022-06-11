@@ -13,8 +13,8 @@ test -n "$pkgname"
 pkgver=$2
 test -n "$pkgver"
 
-: ${pkgrel:=0}
-: ${scriptepoch:=2}
+: ${pkgrel:=1}
+: ${scriptepoch:=1}
 
 GPG="gpg --no-greeting --armor --use-agent --lock-never --no-permission-warning --no-autostart --pinentry-mode loopback"
 
