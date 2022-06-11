@@ -112,7 +112,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
 	_commit="Build upstream release $pkgver for $DISTRIB_CODENAME"
 	bzr revert debian/changelog
-	dch -D $DISTRIB_CODENAME -v $_pkgver "$_commit"
+	dch -D $DISTRIB_CODENAME -b -v $_pkgver "$_commit"
 	yes | sudo mk-build-deps -i ||:
 	rm -f $pkgname-build-deps_${_pkgver}_*
 	debuild -S -sa
@@ -123,7 +123,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	exit 0
 fi
 
-: ${zoo:=bionic focal impish jammy}
+: ${zoo:=bionic focal impish jammy kinetic}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
