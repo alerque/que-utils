@@ -128,12 +128,13 @@ fi
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
 ipof () {
-	lxc list -f json $1 | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
+	instance=$1
+	lxc list -f json name=$instance | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
 }
 
 exists () {
 	instance=$1
-	lxc list -f json $instance | jq -r '.[].name' | grep -Fxq $instance
+	lxc list -f json name=$instance | jq -r '.[].name' | grep -Fxq $instance
 }
 
 launch () {
