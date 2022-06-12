@@ -32,7 +32,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			_tag=v$pkgver
 			_pkgname=cassowary.lua
 			archive=$_pkgname-$pkgver
-			source=https://github.com/sile-typesetter/$_pkgname/$_tag/$archive.tar.gz
+			source=https://github.com/sile-typesetter/$_pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		lua-compat53)
 			_tag=v$pkgver
