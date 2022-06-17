@@ -110,13 +110,13 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	cd $archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
 	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
-	_commit="Build upstream release $pkgver for $DISTRIB_CODENAME"
+	: ${msg:=Build upstream release $pkgver for $DISTRIB_CODENAME}
 	bzr revert debian/changelog
-	dch -D $DISTRIB_CODENAME -b -v $_pkgver "$_commit"
+	dch -D $DISTRIB_CODENAME -b -v $_pkgver "$msg"
 	yes | sudo mk-build-deps -i ||:
 	rm -f $pkgname-build-deps_${_pkgver}_*
 	debuild -S -sa
-	bzr commit -m "$_commit"
+	bzr commit -m "$msg"
 	bzr push :parent
 	cd ..
 	dput $ppa ${pkgname}_${_pkgver}_source.changes
@@ -163,5 +163,5 @@ for animal in $zoo; do
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
-	ssh $(ipof $instance) -l ubuntu -tt -A -- "pkgrel=$pkgrel scriptepoch=$scriptepoch $script $*" || continue
+	ssh $(ipof $instance) -l ubuntu -tt -A -- "pkgrel=$pkgrel scriptepoch=$scriptepoch msg=\"$msg\" $script $*" || continue
 done
