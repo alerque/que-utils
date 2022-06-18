@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+git --git-dir=$HOME/projects/$1/.git ls-files |
+	awk "{ print \"$HOME/projects/$1/\" \$1 }"

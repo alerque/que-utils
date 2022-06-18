@@ -13,6 +13,8 @@
 !/bin/detexify
 !/bin/dropbox.py
 !/bin/edit-server
+!/bin/entr_proj
+!/bin/fetchayet
 !/bin/get_verse
 !/bin/git-churn
 !/bin/git-forest
@@ -37,6 +39,7 @@
 !/bin/pld_upandbuild
 !/bin/pld_upgradables
 !/bin/poldek-index-home.zsh
+!/bin/ppa_foo.sh
 !/bin/radio
 !/bin/repo
 !/bin/ripvcd.zsh
