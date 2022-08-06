@@ -123,7 +123,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	exit 0
 fi
 
-: ${zoo:=bionic focal impish jammy kinetic}
+: ${zoo:=bionic focal jammy kinetic}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
@@ -163,5 +163,5 @@ for animal in $zoo; do
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
-	ssh $(ipof $instance) -l ubuntu -tt -A -- "pkgrel=$pkgrel scriptepoch=$scriptepoch msg=\"$msg\" $script $*" || continue
+	ssh $(ipof $instance) -l ubuntu -tt -A -- "pkgrel=$pkgrel scriptepoch=$scriptepoch msg=\"${msg:=}\" $script $*" || continue
 done
