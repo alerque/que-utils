@@ -153,8 +153,8 @@ freshen () {
 	lxc exec $1 -- apt-get install -y ${makedepends[@]}
 	lxc exec $1 -- add-apt-repository -y $ppa
 	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
-	lxc exec $1 -- systemctl enable sshd
-	lxc exec $1 -- systemctl restart sshd
+	lxc exec $1 -- systemctl enable ssh
+	lxc exec $1 -- systemctl restart ssh
 }
 
 for animal in $zoo; do
