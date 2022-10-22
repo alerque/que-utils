@@ -7,6 +7,51 @@ cd $HOME
 set -euo pipefail
 set -x
 
+: ${zoo:=bionic focal jammy kinetic}
+
+makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
+
+ipof () {
+	instance=$1
+	lxc list -f json name=$instance | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
+}
+
+exists () {
+	instance=$1
+	lxc list -f json name=$instance | jq -r '.[].name' | grep -Fxq $instance
+}
+
+launch () {
+	instance=$1
+	animal=$2
+	lxc launch images:ubuntu/$animal $instance -c security.privileged=true
+	lxc config device add $instance home disk source=$HOME path=/home/ubuntu
+	printf "uid $(id -u) 1000\ngid $(id -g) 1000" |
+		lxc config set $instance raw.idmap -
+}
+
+freshen () {
+	instance=$1
+	lxc exec $1 -- apt-get -y update
+	lxc exec $1 -- apt-get -y dist-upgrade
+	lxc exec $1 -- apt-get install -y ${makedepends[@]}
+	lxc exec $1 -- add-apt-repository -y $ppa
+	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
+	lxc exec $1 -- systemctl enable ssh
+	lxc exec $1 -- systemctl restart ssh
+}
+
+if [[ -v 'FRESHEN' ]]; then
+	for animal in $zoo; do
+		for pkgname in lua-{cassowary,compat53,epnf,linenoise,penlight,repl,stdlib,utf8,vstruct,loadkit,cldr,fluent} sile; do
+			instance=$pkgname-$animal
+			exists $instance || launch $instance $animal
+			freshen $instance
+		done
+	done
+	exit 0
+fi
+
 pkgname=$1
 test -n "$pkgname"
 
@@ -122,40 +167,6 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	dput $ppa ${pkgname}_${_pkgver}_source.changes
 	exit 0
 fi
-
-: ${zoo:=bionic focal jammy kinetic}
-
-makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
-
-ipof () {
-	instance=$1
-	lxc list -f json name=$instance | jq -r '.[0].state.network.eth0.addresses[] | select(.family == "inet").address'
-}
-
-exists () {
-	instance=$1
-	lxc list -f json name=$instance | jq -r '.[].name' | grep -Fxq $instance
-}
-
-launch () {
-	instance=$1
-	animal=$2
-	lxc launch images:ubuntu/$animal $instance -c security.privileged=true
-	lxc config device add $instance home disk source=$HOME path=/home/ubuntu
-	printf "uid $(id -u) 1000\ngid $(id -g) 1000" |
-		lxc config set $instance raw.idmap -
-}
-
-freshen () {
-	instance=$1
-	lxc exec $1 -- apt-get -y update
-	lxc exec $1 -- apt-get -y dist-upgrade
-	lxc exec $1 -- apt-get install -y ${makedepends[@]}
-	lxc exec $1 -- add-apt-repository -y $ppa
-	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
-	lxc exec $1 -- systemctl enable ssh
-	lxc exec $1 -- systemctl restart ssh
-}
 
 for animal in $zoo; do
 	instance=$pkgname-$animal
