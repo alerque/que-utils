@@ -24,10 +24,23 @@ exists () {
 launch () {
 	instance=$1
 	animal=$2
+	exists $instance && run $instance || create $instance $animal
+}
+
+run () {
+	instance=$1
+	lxc list -f json status=running | jq -r '.[].name' | grep -Fxq $instance || lxc start $instance
+	# freshen $instance
+}
+
+create () {
+	instance=$1
+	animal=$2
 	lxc launch images:ubuntu/$animal $instance -c security.privileged=true
 	lxc config device add $instance home disk source=$HOME path=/home/ubuntu
 	printf "uid $(id -u) 1000\ngid $(id -g) 1000" |
 		lxc config set $instance raw.idmap -
+	freshen $instance
 }
 
 freshen () {
@@ -43,9 +56,9 @@ freshen () {
 
 if [[ -v 'FRESHEN' ]]; then
 	for animal in $zoo; do
-		for pkgname in lua-{cassowary,compat53,epnf,linenoise,penlight,repl,stdlib,utf8,vstruct,loadkit,cldr,fluent} sile; do
+		for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile; do
 			instance=$pkgname-$animal
-			exists $instance || launch $instance $animal
+			launch $instance $animal
 			freshen $instance
 		done
 	done
@@ -170,8 +183,7 @@ fi
 
 for animal in $zoo; do
 	instance=$pkgname-$animal
-	exists $instance || launch $instance $animal
-	freshen $instance
+	launch $instance $animal
 	ssh-add -l | grep -q caleb # confirm ssh agent before start
 	$GPG -s -o /dev/null <<< 'test' # confirm current agent locally before trying remote
 	script=${0##$HOME/}
