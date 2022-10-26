@@ -30,6 +30,7 @@ launch () {
 run () {
 	instance=$1
 	lxc list -f json status=running | jq -r '.[].name' | grep -Fxq $instance || lxc start $instance
+	sleep 10 # give DHCP a fighting chance
 	# freshen $instance
 }
 
