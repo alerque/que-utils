@@ -3,6 +3,8 @@
 set -e
 set -x
 
+: ${PAGES:=false}
+
 domain="$1"
 target="$2"
 
@@ -23,37 +25,55 @@ case $PWD in
 		;;
 esac
 
-vmail="$etc/mail/virtual/$domain"
-pushd $(dirname $vmail)
-if [[ ! -a $vmail ]]; then
-	if [[ -n $target ]]; then
-		$exe ln -s $target $domain
+if ! $PAGES; then
+	vmail="$etc/mail/virtual/$domain"
+	pushd $(dirname $vmail)
+	if [[ ! -a $vmail ]]; then
+		if [[ -n $target ]]; then
+			$exe ln -s $target $domain
+		fi
 	fi
+	nvim $domain
+	popd
 fi
-nvim $domain
-popd
 
 vhost="$etc/httpd/conf/extra/httpd-vhosts.conf"
 if ! grep -sF "Host $domain" $vhost; then
 	if [[ -z $target ]]; then
-		$exe tee -a $vhost <<< "Use VHost $domain"
+		if $PAGES; then
+			$exe tee -a $vhost <<< "Use PagesHost $domain"
+		else
+			$exe tee -a $vhost <<< "Use VHost $domain"
+		fi
 	else
-		$exe tee -a $vhost <<< "Use RedirectHost $domain $target"
+		if $PAGES; then
+			$exe tee -a $vhost <<< "Use PagesSubHost $domain $target"
+		else
+			$exe tee -a $vhost <<< "Use RedirectHost $domain $target"
+		fi
 	fi
 fi
 nvim $vhost
 
-certs="$etc/acme-redirect.d/$domain.conf"
-if [[ ! -a $certs ]]; then
-	cat <<- EOF | $exe tee $certs
-		[cert]
-		name = "$domain"
-		dns_names = [
-		  "$domain",
-		  "www.$domain",
-		]
+if $PAGES && [[ -n $target ]]; then
+	certs="$etc/acme-redirect.d/$target.conf"
+	$exe sed -i -e "/^]$/i\  \"$domain\"," $certs
+	nvim $certs
+else
+	certs="$etc/acme-redirect.d/$domain.conf"
+	if [[ ! -a $certs ]]; then
+		cat <<- EOF | $exe tee $certs
+			[cert]
+			name = "$domain"
+			dns_names = [
+			"$domain",
+			"www.$domain",
+			]
 
-		# vim: ft=toml
-	EOF
+			# vim: ft=toml
+		EOF
+	fi
+	nvim $certs
 fi
-nvim $certs
+
+echo VISIT: "https://hstspreload.org/?domain=$domain"
