@@ -28,11 +28,12 @@ rsync -crlpv --delete \
     --include "wp-content/uploads/.htaccess" \
     --exclude "wp-content/uploads" \
     --exclude "wp-content/cache" \
+    --exclude "wp-content/et-cache" \
     --include "wp-content/w3tc-config/master.php" \
     --exclude "wp-content/w3tc-config" \
-	--include "wp-content/webp-express/.htaaccess" \
-	--include "wp-content/webp-express/webp-images/.htaaccess" \
-	--exclude "wp-content/webp-express" \
+    --include "wp-content/webp-express/.htaccess" \
+    --include "wp-content/webp-express/webp-images/.htaccess" \
+    --exclude "wp-content/webp-express" \
     --exclude "wp-content/gallery" \
     ./ "$deploydir/"
 
