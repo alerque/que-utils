@@ -24,6 +24,7 @@ sudo chmod g+xs "$deploydir"
 rsync -crlpv --delete \
     --exclude ".git*" \
     --exclude "*~" \
+    --exclude "tags" \
     --exclude "makefile" --exclude "Makefile" --exclude ".gitlab-ci.yml" \
     --include "wp-content/uploads/.htaccess" \
     --exclude "wp-content/uploads" \
