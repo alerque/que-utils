@@ -11,8 +11,10 @@ trap 'rm -rf $LOG' EXIT SIGHUP SIGTERM
 /usr/bin/wp --color $@ | tee $LOG
 
 git add -A
+
 {
 	echo "[wp] $@\n"
-	cat $LOG
+	cat $LOG |
+		sed 's/\x1b\[[0-9;]*[mGKHF]//g'
 } |
-git commit -F -
+	git commit -F -
