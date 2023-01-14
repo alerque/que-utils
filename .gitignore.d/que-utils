@@ -20,6 +20,7 @@
 !/bin/git-forest
 !/bin/git-ls-all-trees
 !/bin/git-overwritten
+!/bin/git-remote-host
 !/bin/graph_my_life.zsh
 !/bin/inbox
 !/bin/ipk_play
