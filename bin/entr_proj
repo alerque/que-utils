@@ -1,4 +1,6 @@
 #!/usr/bin/env zsh
 
-git --git-dir=$HOME/projects/$1/.git ls-files |
-	awk "{ print \"$HOME/projects/$1/\" \$1 }"
+for proj in $@; do
+	git --git-dir=$HOME/projects/$proj/.git ls-files |
+		awk "{ print \"$HOME/projects/$proj/\" \$1 }"
+done
