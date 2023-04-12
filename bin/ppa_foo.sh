@@ -57,7 +57,7 @@ freshen () {
 
 if [[ -v 'FRESHEN' ]]; then
 	for animal in $zoo; do
-		for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile; do
+		for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} fontproof sile; do
 			instance=$pkgname-$animal
 			launch $instance $animal
 			freshen $instance
@@ -150,6 +150,11 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			_tag=v$pkgver
 			archive=$_pkgname-$pkgver
 			source=https://github.com/alerque/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		fontproof)
+			_tag=v$pkgver
+			archive=$pkgname-$pkgver
+			source=https://github.com/sile-typesetter/$pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		sile)
 			_tag=v$pkgver
