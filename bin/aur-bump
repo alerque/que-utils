@@ -11,10 +11,7 @@ updpkgsums
 
 # arch-nspawn ~/scratch/arch_chroot/root pacman --noconfirm -Syu
 
-if [[ $1 == chroot ]]; then
-	shift
-	CHROOT=$HOME/scratch/arch_chroot
-	makechrootpkg -c -u -r $CHROOT -n -C -- $@
+signpkgs () {
 	source PKGBUILD
 	ver=${epoch:+${epoch}:}$pkgver-$pkgrel
 	for parch in "${arch[@]}"; do
@@ -23,9 +20,24 @@ if [[ $1 == chroot ]]; then
 			gpg --detach-sign --no-armor --local-user alerque@archlinux.org -- $pkg
 		fi
 	done
-else
-	makepkg -fs $@
-fi
+}
+
+case $1 in
+	chroot)
+		shift
+		CHROOT=$HOME/scratch/arch_chroot
+		makechrootpkg -c -u -r $CHROOT -n -C -- $@
+		signpkgs
+		;;
+	offload)
+		shift
+		pkgctl build -o --repo extra $@
+		signpkgs
+		;;
+	*)
+		makepkg -fs $@
+		;;
+esac
 
 git add -u ./
 
