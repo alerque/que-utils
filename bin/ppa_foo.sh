@@ -56,13 +56,18 @@ freshen () {
 }
 
 if [[ -v 'FRESHEN' ]]; then
+	N=8; i=1
+	(
 	for animal in $zoo; do
 		for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} fontproof sile; do
+			((i=i%N)); ((i++==0)) && wait ||:
 			instance=$pkgname-$animal
 			launch $instance $animal
-			freshen $instance
+			freshen $instance &
 		done
 	done
+	wait
+	)
 	exit 0
 fi
 
