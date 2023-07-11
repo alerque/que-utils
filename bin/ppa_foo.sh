@@ -7,7 +7,7 @@ cd $HOME
 set -euo pipefail
 set -x
 
-: ${zoo:=bionic focal jammy kinetic}
+: ${zoo:=focal jammy kinetic}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
