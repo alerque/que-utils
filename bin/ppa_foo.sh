@@ -30,8 +30,6 @@ launch () {
 run () {
 	instance=$1
 	lxc list -f json status=running | jq -r '.[].name' | grep -Fxq $instance || lxc start $instance
-	sleep 10 # give DHCP a fighting chance
-	# freshen $instance
 }
 
 create () {
@@ -49,21 +47,25 @@ freshen () {
 	lxc exec $1 -- apt-get -y update
 	lxc exec $1 -- apt-get -y dist-upgrade
 	lxc exec $1 -- apt-get install -y ${makedepends[@]}
-	lxc exec $1 -- add-apt-repository -y $ppa
+	lxc exec $1 -- add-apt-repository -y $ppa ||:
 	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
 	lxc exec $1 -- systemctl enable ssh
 	lxc exec $1 -- systemctl restart ssh
 }
 
 if [[ -v 'FRESHEN' ]]; then
-	N=8; i=1
+	# N=8; i=1
 	(
 	for animal in $zoo; do
-		for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} fontproof sile; do
-			((i=i%N)); ((i++==0)) && wait ||:
+		# for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} fontproof sile; do
+		# for pkgname in sile; do
+		for pkgname in lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof; do
+			# ((i=i%N)); ((i++==0)) && wait ||:
+			(
 			instance=$pkgname-$animal
 			launch $instance $animal
-			freshen $instance &
+			freshen $instance
+			) &
 		done
 	done
 	wait
@@ -92,17 +94,34 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	env
 	$GPG -s -o /dev/null <<< 'test'
 	case $pkgname in
-		lua-cassowary)
-			_tag=v$pkgver
-			_pkgname=cassowary.lua
-			archive=$_pkgname-$pkgver
-			source=https://github.com/sile-typesetter/$_pkgname/archive/$_tag/$archive.tar.gz
-			;;
 		lua-compat53)
 			_tag=v$pkgver
 			_pkgname=lua-compat-5.3
 			archive=$_pkgname-$pkgver
-			source=https://github.com/keplerproject/$_pkgname/archive/$_tag/$archive.tar.gz
+			source=https://github.com/lunarmodules/$_pkgname/archive/$_tag/$archive.tar.gz
+			;;
+		lua-repl)
+			archive=$pkgname-$pkgver
+			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		lua-linenoise)
+			archive=$pkgname-$pkgver
+			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		lua-vstruct)
+			_pkgname=vstruct
+			archive=$_pkgname-$pkgver
+			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
+			;;
+		# lua-stdlib)
+		#     _tag=release-v$pkgver
+		#     archive=$pkgname-$_tag
+		#     source=https://github.com/$pkgname/$pkgname/archive/$_tag/$archive.tar.gz
+		#     ;;
+		lua-utf8)
+			_pkgname=luautf8
+			archive=$_pkgname-$pkgver
+			source=https://github.com/starwing/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
 		lua-epnf)
 			_pkgname=lua-luaepnf
@@ -110,39 +129,22 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			archive=$_pkgname-$pkgver
 			source=https://github.com/siffiejoe/$pkgname/archive/$_tag/$archive.tag.gz
 			;;
-		lua-linenoise)
-			archive=$pkgname-$pkgver
-			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
+		lua-loadkit)
+			_pkgname=loadkit
+			_tag=v$pkgver
+			archive=$_pkgname-$pkgver
+			source=https://github.com/leafo/$_pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		lua-penlight)
 			_pkgname=Penlight
 			archive=$_pkgname-$pkgver
 			source=https://github.com/lunarmodules/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
-		lua-repl)
-			archive=$pkgname-$pkgver
-			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
-			;;
-		lua-stdlib)
-			_tag=release-v$pkgver
-			archive=$pkgname-$_tag
-			source=https://github.com/$pkgname/$pkgname/archive/$_tag/$archive.tar.gz
-			;;
-		lua-utf8)
-			_pkgname=luautf8
-			archive=$_pkgname-$pkgver
-			source=https://github.com/starwing/$_pkgname/archive/$pkgver/$archive.tar.gz
-			;;
-		lua-vstruct)
-			_pkgname=vstruct
-			archive=$_pkgname-$pkgver
-			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
-			;;
-		lua-loadkit)
-			_pkgname=loadkit
+		lua-cassowary)
 			_tag=v$pkgver
+			_pkgname=cassowary.lua
 			archive=$_pkgname-$pkgver
-			source=https://github.com/leafo/$_pkgname/archive/$_tag/$archive.tar.gz
+			source=https://github.com/sile-typesetter/$_pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		lua-cldr)
 			_pkgname=cldr-lua
@@ -156,16 +158,16 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			archive=$_pkgname-$pkgver
 			source=https://github.com/alerque/$_pkgname/archive/$_tag/$archive.tar.gz
 			;;
-		fontproof)
-			_tag=v$pkgver
-			archive=$pkgname-$pkgver
-			source=https://github.com/sile-typesetter/$pkgname/archive/$_tag/$archive.tar.gz
-			;;
 		sile)
 			_tag=v$pkgver
 			archive=$pkgname-$pkgver
 			source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$archive.tar.xz
 			orig=${pkgname}_$pkgver.orig.tar.xz
+			;;
+		fontproof)
+			_tag=v$pkgver
+			archive=$pkgname-$pkgver
+			source=https://github.com/sile-typesetter/$pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		*)
 			exit 1
