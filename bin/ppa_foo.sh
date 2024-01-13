@@ -8,6 +8,7 @@ set -euo pipefail
 set -x
 
 : ${zoo:=focal jammy lunar mantic}
+: ${pkgset:=lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
@@ -57,9 +58,7 @@ if [[ -v 'FRESHEN' ]]; then
 	# N=8; i=1
 	(
 	for animal in $zoo; do
-		# for pkgname in lua-{compat53,stdlib,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} fontproof sile; do
-		# for pkgname in sile; do
-		for pkgname in lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof; do
+		for pkgname in $pkgset; do
 			# ((i=i%N)); ((i++==0)) && wait ||:
 			(
 			instance=$pkgname-$animal
@@ -113,11 +112,6 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			archive=$_pkgname-$pkgver
 			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
 			;;
-		# lua-stdlib)
-		#     _tag=release-v$pkgver
-		#     archive=$pkgname-$_tag
-		#     source=https://github.com/$pkgname/$pkgname/archive/$_tag/$archive.tar.gz
-		#     ;;
 		lua-utf8)
 			_pkgname=luautf8
 			archive=$_pkgname-$pkgver
