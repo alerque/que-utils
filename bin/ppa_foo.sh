@@ -8,7 +8,7 @@ set -euo pipefail
 set -x
 
 : ${zoo:=jammy mantic}
-: ${pkgset:=lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof}
+: ${pkgset:=$(eval echo lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof)}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
 
