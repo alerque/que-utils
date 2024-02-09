@@ -41,7 +41,7 @@ esac
 
 git add -u ./
 
-git commit -m "$2" ||:
+git commit -m "$MSG" ||:
 
 git show
 
