@@ -7,7 +7,7 @@ cd $HOME
 set -euo pipefail
 set -x
 
-: ${zoo:=jammy mantic}
+: ${zoo:=jammy mantic noble}
 : ${pkgset:=$(eval echo lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof)}
 
 makedepends=(gpg curl bzr devscripts equivs openssh-server software-properties-common quilt)
@@ -36,7 +36,7 @@ run () {
 create () {
 	instance=$1
 	animal=$2
-	lxc launch images:ubuntu/$animal $instance -c security.privileged=true
+	lxc launch ubuntu-daily:$animal $instance -c security.privileged=true
 	lxc config device add $instance home disk source=$HOME path=/home/ubuntu
 	printf "uid $(id -u) 1000\ngid $(id -g) 1000" |
 		lxc config set $instance raw.idmap -
