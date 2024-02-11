@@ -45,7 +45,7 @@ create () {
 
 freshen () {
 	instance=$1
-	lxc exec $1 -- sed -i -e "/nrconf.restart/{s/^#//;s/'i'/'a'/}" /etc/needrestart/needrestart.conf
+	lxc exec $1 -- sed -i -e "/nrconf.restart/{s/^#//;s/'i'/'a'/}" /etc/needrestart/needrestart.conf ||:
 	lxc exec $1 -- apt-get -y update
 	lxc exec $1 -- apt-get -y dist-upgrade
 	lxc exec $1 -- apt-get install -y ${makedepends[@]}
