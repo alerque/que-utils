@@ -45,9 +45,9 @@ create () {
 
 freshen () {
 	instance=$1
-	lxc exec $1 -- apt-get -y update
-	lxc exec $1 -- apt-get -y dist-upgrade
-	lxc exec $1 -- apt-get install -y ${makedepends[@]}
+	lxc exec $1 -- NEEDRESTART_MODE=a apt-get -y update
+	lxc exec $1 -- NEEDRESTART_MODE=a apt-get -y dist-upgrade
+	lxc exec $1 -- NEEDRESTART_MODE=a apt-get install -y ${makedepends[@]}
 	lxc exec $1 -- add-apt-repository -y $ppa ||:
 	lxc exec $1 -- sed -i -e '/AllowAgentForwarding/s/^#//' /etc/ssh/sshd_config
 	lxc exec $1 -- systemctl enable ssh
