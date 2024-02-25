@@ -41,6 +41,7 @@
 !/bin/pld_upgradables
 !/bin/poldek-index-home.zsh
 !/bin/ppa_foo.sh
+!/bin/print_counts
 !/bin/radio
 !/bin/repo
 !/bin/ripvcd.zsh

@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+curl -fsSL http://192.168.9.12/sws/app/information/counters/counters.json |
+	 grep -E 'GXI_BILLING_(SIM|DU)PLEX_BW_PRINT_CNT' |
+	 sed -E 's/[\t, ]//g;s/:/=/;s/$//' |
+	 source /dev/stdin
+
+case $1 in
+	pre)
+		exec > /tmp/print_counts_pre
+		;;
+	post)
+		source /tmp/print_counts_pre
+		let GXI_BILLING_SIMPLEX_BW_PRINT_CNT="$GXI_BILLING_SIMPLEX_BW_PRINT_CNT-$SIMPLEX"
+		let GXI_BILLING_DUPLEX_BW_PRINT_CNT="$GXI_BILLING_DUPLEX_BW_PRINT_CNT-$DUPLEX"
+		;;
+	*)
+		;;
+esac
+
+echo "SIMPLEX=$GXI_BILLING_SIMPLEX_BW_PRINT_CNT"
+echo "DUPLEX=$GXI_BILLING_DUPLEX_BW_PRINT_CNT"
