@@ -1,4 +1,5 @@
 *
+!/bin
 !/bin/archpub
 !/bin/aur-bump
 !/bin/battery
@@ -40,7 +41,7 @@
 !/bin/pld_upandbuild
 !/bin/pld_upgradables
 !/bin/poldek-index-home.zsh
-!/bin/ppa_foo.sh
+!/bin/ppa-zookeeper
 !/bin/print_counts
 !/bin/radio
 !/bin/repo
@@ -65,4 +66,5 @@
 !/bin/wiki_convert
 !/bin/wiki_rename
 !/bin/wp
+!/.gitignore.d
 !/.gitignore.d/que-utils
