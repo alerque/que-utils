@@ -4,7 +4,7 @@
 : ${TEX:=false}
 
 case $1 in
-	block|inline)
+	block|inline|plain)
 		mode=$1
 		shift
 		;;
@@ -49,6 +49,9 @@ case $mode in
 		echo
 		echo :::
 		echo
+		;;
+	plain)
+		cat -s /tmp/ayet | tr '\n' ' ' | pandoc -t plain-smart --wrap none
 		;;
 	inline|*)
 		echo -n "[[$ref]{.ref} "
