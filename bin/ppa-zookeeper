@@ -57,19 +57,19 @@ freshen () {
 
 if [[ -v 'FRESHEN' ]]; then
 	# N=8; i=1
-	(
+	# (
 	for animal in $zoo; do
 		for pkgname in $pkgset; do
 			# ((i=i%N)); ((i++==0)) && wait ||:
-			(
+			# (
 			instance=$pkgname-$animal
 			launch $instance $animal
 			freshen $instance
-			) &
+			# ) &
 		done
 	done
-	wait
-	)
+	# wait
+	# )
 	exit 0
 fi
 
