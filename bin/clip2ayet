@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
-xclip -selection clipboard -out |
-	read ref
+wl-paste | read ref
 
 fetchayet ${1:-inline} "$ref" |
-	pee cat "xclip -selection clipboard -in"
+	pee cat wl-copy
