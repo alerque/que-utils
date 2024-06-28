@@ -156,8 +156,8 @@ if systemd-detect-virt | grep -Fxq lxc; then
 		sile)
 			_tag=v$pkgver
 			archive=$pkgname-$pkgver
-			source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$archive.tar.xz
-			orig=${pkgname}_$pkgver.orig.tar.xz
+			source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$archive.tar.zst
+			orig=${pkgname}_$pkgver.orig.tar.zst
 			;;
 		fontproof)
 			_tag=v$pkgver
@@ -171,6 +171,8 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	: ${orig:=${pkgname}_$pkgver.orig.tar.gz}
 	cd projects/distro-packaging/ppa
 	test -f $orig || curl -fsSL $source -o $orig
+	# dpkg-source doesn't support zst, so drop a copy it can handle
+	if [[ $orig =~ \.zst ]]; then zstd -d < $orig | xz > ${orig%.zst}.xz; fi
 	rm -rf $archive
 	test -d $archive || tar xfva $orig
 	cd $archive
