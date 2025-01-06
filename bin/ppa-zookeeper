@@ -93,6 +93,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	ssh-add -l | grep -q caleb
 	env
 	$GPG -s -o /dev/null <<< 'test'
+	cd projects/distro-packaging/ppa
 	case $pkgname in
 		lua-compat53)
 			_tag=v$pkgver
@@ -157,7 +158,17 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			_tag=v$pkgver
 			archive=$pkgname-$pkgver
 			source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$archive.tar.zst
-			orig=${pkgname}_$pkgver.orig.tar.zst
+			vendor=$pkgname-vendored-crates-$pkgver
+			vendor_source=https://github.com/sile-typesetter/$pkgname/releases/download/$_tag/$vendor.tar.zst
+			orig=${pkgname}_$pkgver.orig.tar.xz
+			test -f $orig || {
+				test -f $archive.tar.zst || curl -fsSLO $source
+				test -f $vendor.tar.zst || curl -fsSLO $vendor_source
+				rm -rf $archive
+				tar xfva $archive.tar.zst
+				tar xfva $vendor.tar.zst --directory $archive
+				tar cvaf $orig $archive
+			}
 			;;
 		fontproof)
 			_tag=v$pkgver
@@ -169,7 +180,6 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			;;
 	esac
 	: ${orig:=${pkgname}_$pkgver.orig.tar.gz}
-	cd projects/distro-packaging/ppa
 	test -f $orig || curl -fsSL $source -o $orig
 	# dpkg-source doesn't support zst, so drop a copy it can handle
 	if [[ $orig =~ \.zst ]]; then zstd -d < $orig | xz > ${orig%.zst}.xz; fi
