@@ -165,9 +165,9 @@ if systemd-detect-virt | grep -Fxq lxc; then
 				test -f $archive.tar.zst || curl -fsSLO $source
 				test -f $vendor.tar.zst || curl -fsSLO $vendor_source
 				rm -rf $archive
-				tar xfva $archive.tar.zst
-				tar xfva $vendor.tar.zst --directory $archive
-				tar cvaf $orig $archive
+				tar xfa $archive.tar.zst
+				tar xfa $vendor.tar.zst --directory $archive
+				tar caf $orig $archive
 			}
 			;;
 		fontproof)
@@ -184,7 +184,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	# dpkg-source doesn't support zst, so drop a copy it can handle
 	if [[ $orig =~ \.zst ]]; then zstd -d < $orig | xz > ${orig%.zst}.xz; fi
 	rm -rf $archive
-	test -d $archive || tar xfva $orig
+	test -d $archive || tar xfa $orig
 	cd $archive
 	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
 	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
