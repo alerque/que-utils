@@ -192,7 +192,6 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	bzr revert debian/changelog
 	dch -D $DISTRIB_CODENAME -b -v $_pkgver "$msg"
 	yes | sudo mk-build-deps -i ||:
-	yes | sudo apt autoremove ||:
 	rm -f $pkgname-build-deps_${_pkgver}_*
 	debuild -S -sa
 	bzr commit -m "$msg"
