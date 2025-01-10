@@ -26,6 +26,7 @@ launch () {
 	instance=$1
 	animal=$2
 	exists $instance && run $instance || create $instance $animal
+	lxc exec $1 -- which brz || freshen $instance
 }
 
 run () {
