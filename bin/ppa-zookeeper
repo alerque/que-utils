@@ -94,6 +94,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	env
 	$GPG -s -o /dev/null <<< 'test'
 	cd projects/distro-packaging/ppa
+	# Ordered by dependency tree so they can be built in this order from scratch
 	case $pkgname in
 		lua-compat53)
 			_tag=v$pkgver
