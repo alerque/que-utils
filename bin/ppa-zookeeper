@@ -10,7 +10,7 @@ set -x
 : ${zoo:=jammy noble oracular plucky}
 : ${pkgset:=$(eval echo lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof)}
 
-makedepends=(gpg curl devscripts equivs openssh-server python3-breezy software-properties-common quilt)
+makedepends=(gpg brz curl devscripts equivs openssh-server software-properties-common quilt)
 
 ipof () {
 	instance=$1
@@ -89,7 +89,7 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	source /etc/lsb-release
 	source .bashrc
 	env | grep -q DEBEMAIL
-	bzr whoami | grep -q Caleb
+	brz whoami | grep -q Caleb
 	ssh-add -l | grep -q caleb
 	env
 	$GPG -s -o /dev/null <<< 'test'
@@ -186,16 +186,16 @@ if systemd-detect-virt | grep -Fxq lxc; then
 	rm -rf $archive
 	test -d $archive || tar xfa $orig
 	cd $archive
-	test -d debian || bzr branch --use-existing-dir lp:$pkgname .
+	test -d debian || brz branch --use-existing-dir lp:$pkgname .
 	_pkgver="$pkgver-${pkgrel}ppa${scriptepoch}~${DISTRIB_ID,,}$DISTRIB_RELEASE"
 	: ${msg:=Build upstream release $pkgver for $DISTRIB_CODENAME}
-	bzr revert debian/changelog
+	brz revert debian/changelog
 	dch -D $DISTRIB_CODENAME -b -v $_pkgver "$msg"
 	yes | sudo mk-build-deps -i ||:
 	rm -f $pkgname-build-deps_${_pkgver}_*
 	debuild -S -sa
-	bzr commit -m "$msg"
-	bzr push :parent
+	brz commit -m "$msg"
+	brz push :parent
 	cd ..
 	dput $ppa ${pkgname}_${_pkgver}_source.changes
 	exit 0
