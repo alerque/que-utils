@@ -112,9 +112,10 @@ if systemd-detect-virt | grep -Fxq lxc; then
 			source=https://github.com/hoelzro/$pkgname/archive/$pkgver/$archive.tar.gz
 			;;
 		lua-vstruct)
+			_tag=v$pkgver
 			_pkgname=vstruct
 			archive=$_pkgname-$pkgver
-			source=https://github/ToxicFog/$_pkgname/archive/$pkgver/$archive.tar.gz
+			source=https://github.com/ToxicFrog/$_pkgname/archive/$_tag/$archive.tar.gz
 			;;
 		lua-utf8)
 			_pkgname=luautf8
