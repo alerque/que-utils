@@ -7,7 +7,7 @@ cd $HOME
 set -euo pipefail
 set -x
 
-: ${zoo:=jammy noble oracular plucky}
+: ${zoo:=jammy noble oracular}
 : ${pkgset:=$(eval echo lua-{compat53,repl,linenoise,vstruct,utf8,epnf,loadkit,penlight,cassowary,cldr,fluent} sile fontproof)}
 
 makedepends=(gpg brz curl devscripts equivs openssh-server software-properties-common quilt)
