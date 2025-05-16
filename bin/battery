@@ -3,8 +3,8 @@
 set -e
 
 bat=/sys/class/power_supply/BAT0/
-full=$(cat $bat/energy_full)
-now=$(cat $bat/energy_now)
+full=$(cat $bat/charge_full)
+now=$(cat $bat/charge_now)
 state=$(cat $bat/status)
 percent=$(( 100 * $now / $full ))
 
