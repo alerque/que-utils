@@ -1,0 +1,31 @@
+#!/usr/bin/zsh
+
+set -e
+
+test -v ADB_PASSCODE
+
+local unlock_lockscreen=(
+	'keyevent KEYCODE_POWER' # in case we're run when already locked
+	'keyevent KEYCODE_WAKEUP' # turn an and trigger the lock screen
+	'keyevent KEYCODE_MENU' # ask the lock screen to ask for password
+	"text $ADB_PASSCODE" # send the magick incantation
+	'keyevent ENTER' # beem me up scotty
+)
+
+local allow_rustdesk_fullscreen=(
+	'tap 500 925' # open dropdown
+	'tap 500 1075' # pick fullscreen option
+	'tap 875 1260' # start service
+)
+
+function adb_input() {
+	for input in ${(P)${1}[@]}; do
+		adb shell "input $input"
+		sleep 1
+	done
+}
+
+adb unroot
+adb_input unlock_lockscreen
+sleep 5
+adb_input allow_rustdesk_fullscreen
