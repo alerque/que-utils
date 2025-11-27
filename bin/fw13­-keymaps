@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+
+set -e
+
+# FrameWork 13 keyboard matrix
+# https://www.howett.net/data/framework_matrix/
+# https://community.frame.work/t/changed-my-keyboard-layout-in-hardware-to-colemak/14174/10
+# https://github.com/FrameworkComputer/EmbeddedController/blob/03897d4070b3accdb216d2e72e40134a6b5958e0/include/keyboard_8042_sharedlib.h#L179
+# pg52 https://bitsavers.trailing-edge.com/pdf/ibm/pc/at/1502494_PC_AT_Technical_Reference_Mar84.pdf
+
+local remaps=(
+	b4,b4 # CapsLock
+	w14 # LShift
+	# w12 # LShift
+
+	b1,b9 # LShift
+	w58 # CapsLock (ISO 3rd)
+
+	b1,bC # LCtrl
+	w76 # Esc
+
+	b2,b2 # Fn
+	wE01F # LWin
+
+	b3,b1 # LMeta
+	w11 # LAlt
+
+	b1,b3 # LAlt
+	# w14 # LCtrl
+	w12 # LCtrl
+
+	b0,b3 # RAlt
+	wff # Fn
+
+	b0,bC # RCtrl
+	wE02F # Menu
+
+	# b0,b9 # RShift
+)
+
+export IFS=,
+sudo fw-ectool raw 0x3e0c d7,d1,${(f)remaps}
