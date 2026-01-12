@@ -5,6 +5,17 @@ set -e
 
 test -f PKGBUILD
 
+case $1 in
+	auto)
+		shift
+		test -f .SRCINFO || makepkg -o --nodeps --skippgpcheck
+		sed -ne '/depends =/{s/.*= //;p}' .SRCINFO |
+			xargs pacman -Sdd --print-format '%r' |
+			grep -qFx 'alerque' && exec $0 chroot $@ || exec $0 offload $@
+		exit 0
+		;;
+esac
+
 nvim PKGBUILD
 
 updpkgsums
@@ -34,8 +45,12 @@ case $1 in
 		pkgctl build --inspect failure -o --repo extra $@
 		signpkgs
 		;;
-	*)
+	local)
+		shift
 		makepkg -fs $@
+		;;
+	auto|*)
+		exit 1
 		;;
 esac
 
