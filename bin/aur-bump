@@ -26,12 +26,12 @@ case $1 in
 	chroot)
 		shift
 		CHROOT=$HOME/scratch/arch_chroot
-		makechrootpkg -c -u -r $CHROOT -n -C -- $@
+		makechrootpkg -x failure -c -u -r $CHROOT -n -C -- $@
 		signpkgs
 		;;
 	offload)
 		shift
-		pkgctl build -o --repo extra $@
+		pkgctl build --inspect failure -o --repo extra $@
 		signpkgs
 		;;
 	*)
