@@ -14,6 +14,8 @@ export SHELL_PIPE=0
 
 git add -A
 
+git diff-index --quiet --cached HEAD && exit 0 # quit now if nothing is staged
+
 {
 	echo "[wp] $@\n"
 	cat $LOG |
