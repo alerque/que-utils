@@ -2,35 +2,22 @@
 
 set -e
 
-case $1 in
-	en)
-		SOURCE_LANG=English
-		SOURCE_CODE=en-US
-		;;
-	tr)
-		SOURCE_LANG=Turkish
-		SOURCE_CODE=tr-TR
-		;;
-	ru)
-		SOURCE_LANG=Russian
-		SOURCE_CODE=ru-RU
-		;;
-esac
+codify () {
+	case $1 in
+		en)
+			echo English en-US
+			;;
+		tr)
+			echo Turkish tr-TR
+			;;
+		ru)
+			echo Russian ru-RU
+			;;
+	esac
+}
 
-case $2 in
-	en)
-		TARGET_LANG=English
-		TARGET_CODE=en-US
-		;;
-	tr)
-		TARGET_LANG=Turkish
-		TARGET_CODE=tr-TR
-		;;
-	ru)
-		TARGET_LANG=Russian
-		TARGET_CODE=ru-RU
-		;;
-esac
+codify $1 | read SOURCE_LANG SOURCE_CODE
+codify $2 | read TARGET_LANG TARGET_CODE
 
 cat <<- EOF | read PROMPT
 You are a professional ${SOURCE_LANG} (${SOURCE_CODE}) to ${TARGET_LANG} (${TARGET_CODE}) translator. Your goal is to accurately convey the meaning and nuances of the original ${SOURCE_LANG} text while adhering to ${TARGET_LANG} grammar, vocabulary, and cultural sensitivities.
