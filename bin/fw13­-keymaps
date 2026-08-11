@@ -6,7 +6,9 @@ set -e
 # https://www.howett.net/data/framework_matrix/
 # https://community.frame.work/t/changed-my-keyboard-layout-in-hardware-to-colemak/14174/10
 # https://github.com/FrameworkComputer/EmbeddedController/blob/03897d4070b3accdb216d2e72e40134a6b5958e0/include/keyboard_8042_sharedlib.h#L179
+# https://github.com/FrameworkComputer/Framework-Laptop-12/tree/main/InputCover#keyboard-matrix
 # pg52 https://bitsavers.trailing-edge.com/pdf/ibm/pc/at/1502494_PC_AT_Technical_Reference_Mar84.pdf
+# https://static.frame.work/j7qjd72pdfp6o6gip5fsfjzdznvo
 
 local remaps=(
 	b4,b4 # CapsLock
@@ -39,4 +41,6 @@ local remaps=(
 )
 
 export IFS=,
-sudo fw-ectool raw 0x3e0c d7,d1,${(f)remaps}
+changes=$(( ${#remaps} / 2 ))
+sudo fw-ectool raw 0x3e0c d$changes,d1,${(f)remaps}
+# sudo fw-ectool raw 0x3e0c d1,d1,b6,ba,w16
