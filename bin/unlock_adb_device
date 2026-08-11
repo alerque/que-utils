@@ -15,7 +15,7 @@ local unlock_lockscreen=(
 local allow_rustdesk_fullscreen=(
 	'tap 500 925' # open dropdown
 	'tap 500 1075' # pick fullscreen option
-	'tap 875 1260' # start service
+	'tap 875 1220' # start service
 )
 
 function adb_input() {
