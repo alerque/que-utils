@@ -3,6 +3,8 @@
 set -e
 # set -x
 
+: ${OFFLOAD_HOST=build.archlinux.org}
+
 test -f PKGBUILD
 
 case $1 in
@@ -42,7 +44,7 @@ case $1 in
 		;;
 	offload)
 		shift
-		pkgctl build --inspect failure -o --repo extra $@
+		pkgctl build --inspect failure -o --offload-host $OFFLOAD_HOST --repo extra $@
 		signpkgs
 		;;
 	local)
