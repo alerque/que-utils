@@ -4,6 +4,7 @@ set -e
 # set -x
 
 : ${OFFLOAD_HOST=build.archlinux.org}
+: ${CHROOT=$HOME/scratch/arch_chroot}
 
 test -f PKGBUILD
 
@@ -13,7 +14,7 @@ case $1 in
 		test -f .SRCINFO || makepkg -o --nodeps --skippgpcheck
 		sed -nE '/^\s+(make)?depends =/{s/.*= //;p}' .SRCINFO |
 			xargs pacman -Sdd --print-format '%r' |
-			grep -qFx 'alerque' && exec $0 chroot $@ || exec $0 offload $@
+			grep -qFx 'alerque' && exec "$0" chroot "$@" || exec "$0" offload "$@"
 		exit 0
 		;;
 esac
@@ -38,18 +39,17 @@ signpkgs () {
 case $1 in
 	chroot)
 		shift
-		CHROOT=$HOME/scratch/arch_chroot
-		makechrootpkg -x failure -c -u -r $CHROOT -n -C $@
+		makechrootpkg -x failure -c -u -r "$CHROOT" -n -C -- "$@"
 		signpkgs
 		;;
 	offload)
 		shift
-		pkgctl build --inspect failure -o --offload-host $OFFLOAD_HOST --repo extra $@
+		pkgctl build --inspect failure -o --offload-host "$OFFLOAD_HOST" --repo extra "$@"
 		signpkgs
 		;;
 	local)
 		shift
-		makepkg -fs $@
+		makepkg -fs "$@"
 		;;
 	auto|*)
 		echo "Usage: $0 (auto|chroot|offload|local)"
